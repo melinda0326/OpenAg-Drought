@@ -14,11 +14,13 @@ type YearlyRow = {
 type Props = {
   csvUrl?: string;
   height?: number;
+  title?: string;
 };
 
 export default function TemperatureLineChart({
   csvUrl = "/data/temp_data.csv",
   height = 350,
+  title = "Annual Average Temperature Trend",
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -91,7 +93,7 @@ export default function TemperatureLineChart({
       const svg = d3.select(svgRef.current);
       svg.selectAll("*").remove();
 
-      const margin = { top: 24, right: 35, bottom: 76, left: 72 };
+      const margin = { top: 35, right: 35, bottom: 76, left: 72 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
@@ -117,7 +119,10 @@ export default function TemperatureLineChart({
         .attr("height", innerHeight)
         .attr("fill", "transparent");
 
-      const xAxis = d3.axisBottom(x).tickFormat(d3.format("d"));
+      const [xMin, xMax] = x.domain();
+      const xStart = Math.ceil(xMin / 10) * 10;
+      const xTickVals = d3.range(xStart, Math.floor(xMax) + 1, 10);
+      const xAxis = d3.axisBottom(x).tickValues(xTickVals).tickFormat(d3.format("d"));
 
       const [yMin, yMax] = y.domain();
       const lo = Math.ceil(yMin);
@@ -179,6 +184,17 @@ export default function TemperatureLineChart({
           .attr("stroke-dashoffset", totalLength);
       }
 
+      // Chart title
+      root.append("text")
+        .attr("x", width / 2)
+        .attr("y", 18)
+        .attr("text-anchor", "middle")
+        .attr("fill", "white")
+        .style("font-size", "1.1rem")
+        .style("font-weight", "600")
+        .style("font-family", "Inter, system-ui, sans-serif")
+        .text(title);
+
       root.append("text")
         .attr("x", margin.left + innerWidth / 2)
         .attr("y", height - 2)
@@ -198,7 +214,7 @@ export default function TemperatureLineChart({
     };
 
     draw();
-  }, [csvUrl, containerW, height, isInView]);
+  }, [csvUrl, containerW, height, isInView, title]);
 
   return (
     <div ref={containerRef} style={{ width: "100%", height }}>

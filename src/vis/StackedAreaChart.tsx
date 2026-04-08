@@ -129,8 +129,7 @@ export default function StackedAreaChart<T>({
       .call((s) => {
         s.selectAll("text")
           .attr("fill", "white")
-          .style("font-size", "16px")
-          .style("font-family", "Inter, system-ui, sans-serif")
+          .style("font-size", "var(--body-size)")
           .attr("dy", "1em");
         s.selectAll("line").attr("stroke", "white").attr("stroke-opacity", 0.4);
         s.select(".domain").attr("stroke", "white").attr("stroke-opacity", 0.35);
@@ -141,8 +140,7 @@ export default function StackedAreaChart<T>({
       .call((s) => {
         s.selectAll("text")
           .attr("fill", "white")
-          .style("font-size", "14px")
-          .style("font-family", "Inter, system-ui, sans-serif");
+          .style("font-size", "var(--body-size)")
         s.selectAll("line").attr("stroke", "white").attr("stroke-opacity", 0.4);
         s.select(".domain").attr("stroke", "white").attr("stroke-opacity", 0.35);
       });
@@ -246,7 +244,7 @@ export default function StackedAreaChart<T>({
       const hoverLabel = g
         .append("text")
         .attr("fill", "white")
-        .style("font-size", "12px")
+        .style("font-size", "var(--body-size)")
         .style("font-weight", "500")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
@@ -314,7 +312,6 @@ export default function StackedAreaChart<T>({
         .attr("fill", "white")
         .attr("dominant-baseline", "central")
         .style("font-size", "var(--body-size)")
-        .style("font-family", "Inter, system-ui, sans-serif")
         .text((d) => d.label);
     }
   }, [data, fixedW, containerW, height, title, xLabel, yLabel, bands, referenceLines, hover, showLegend, xTickInterval, yDomain, customMargin, xAccessor]);

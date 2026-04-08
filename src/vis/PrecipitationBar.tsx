@@ -14,6 +14,7 @@ type Props = {
   positiveColor?: string;
   negativeColor?: string;
   svgWidth?: string | number;
+  title?: string;
 };
 
 export default function PrecipitationBarChart({
@@ -23,6 +24,7 @@ export default function PrecipitationBarChart({
   positiveColor = "#4CC9F0",
   negativeColor = "#a80332",
   svgWidth = "75%",
+  title = "Annual Precipitation Anomaly",
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isInView, setIsInView] = useState(false);
@@ -42,7 +44,7 @@ export default function PrecipitationBarChart({
     return () => observer.disconnect();
   }, []);
 
-  const margin = { top: 24, right: 20, bottom: 76, left: 72 };
+  const margin = { top: 35, right: 20, bottom: 76, left: 72 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -208,6 +210,17 @@ export default function PrecipitationBarChart({
           </g>
         );
       })}
+
+      {/* Chart title */}
+      <text
+        x={width / 2}
+        y={18}
+        fill="white"
+        style={{ fontSize: "1.1rem", fontWeight: "600" }}
+        textAnchor="middle"
+      >
+        {title}
+      </text>
 
       <text
         x={margin.left + innerW / 2}

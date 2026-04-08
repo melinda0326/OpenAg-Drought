@@ -168,7 +168,7 @@ export default function CaliforniaCountyMap() {
                 ["==", ["get", "droughtIdx"], 4], DROUGHT_COLORS[4],
                 "#d9d9d9",
               ],
-              // "fill-opacity": 0.75,
+              "fill-opacity": 1,
             }}
           />
           <Layer

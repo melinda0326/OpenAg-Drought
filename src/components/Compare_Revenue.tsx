@@ -36,43 +36,47 @@ export default function Compare_Rev() {
 return (
   <div
     style={{
+      maxWidth: "var(--chart-width)",
       margin: "var(--overlay-margin)",
     }}
   >
-    <p
+    {/* <div
       style={{
-        color: "#fff",
-        fontSize: "var(--body-size)",
-        fontFamily: "Inter, system-ui, sans-serif",
-        lineHeight: 1.6,
-        marginBottom: "2.5rem",
-        maxWidth: "var(--overlay-width)",
+        background: "rgba(0, 0, 0, 0.55)",
+        backdropFilter: "blur(8px)",
+        borderRadius: 12,
+        padding: "2rem 2.5rem",
       }}
-    >
-      Lower production means fewer crops to harvest and sell.
-      Comparing 2019 and 2022 shows how drought directly affected agricultural income.
-    </p>
+    > */}
+      <p
+        style={{
+          color: "#fff",
+          fontSize: "var(--body-size)",
+          lineHeight: 1.6,
+          marginTop: 0,
+          marginBottom: "2.5rem",
+          maxWidth: "var(--overlay-width)",
+        }}
+      >
+        Lower production means fewer crops to harvest and sell.
+        Comparing 2019 and 2022 shows how drought directly affected agricultural income.
+      </p>
 
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-end",
-        gap: "1.5rem",
-      }}
-    >
-      <div style={{ flex: "1 1 0%", minWidth: 0 }}>
-        <OverlayRevBarChart
-          data={data}
-          col2019="proportion_gross_revenue_base"
-          col2022="proportion_grev_sc"
-          title="Revenue Comparision betweeen 2019 and 2022"
-          ylabel="Revenue ($)"
-        />
-      </div>
+      <OverlayRevBarChart
+        data={data}
+        col2019="proportion_gross_revenue_base"
+        col2022="proportion_grev_sc"
+        title="Revenue Comparision betweeen 2019 and 2022"
+        ylabel="Revenue ($)"
+      />
 
       {colusa && (
         <div
           id="pictogram-revenue"
+          style={{
+            marginTop: "2rem",
+            paddingRight: "8rem",
+          }}
         >
           <PictogramRevenue
             revenue2019={colusa.rev2019}
@@ -87,6 +91,6 @@ return (
         </div>
       )}
     </div>
-  </div>
+  // </div>
 );
 }

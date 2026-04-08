@@ -818,7 +818,6 @@ export default function CaliforniaMap({
                 ["==", ["get", "droughtIdx"], 4], DROUGHT_COLORS[4],
                 "rgba(0,0,0,0)",
               ],
-              "fill-opacity": 0.7,
             }}
           />
           <Layer

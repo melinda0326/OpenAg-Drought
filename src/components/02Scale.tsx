@@ -6,7 +6,7 @@ export default function Scale() {
     <StorySection>
       <Box sx={{ width: "var(--overlay-width)", mt: "var(--space-md)" }}>
         <Typography sx={{ fontSize: "var(--body-size)" }}>
-          California’s agricultural sector is the nation’s top producer and one of the most significant agricultural systems in the world.<br />
+          California’s <Box component="span" sx={{ color: "#2f7d44", fontWeight: 700 }}>agricultural sector</Box> is the nation’s top producer and one of the most significant agricultural systems in the world.<br />
         </Typography>
 
         <Typography sx={{ fontSize: "1rem", opacity:"60%", mt: "--space-sm"}}>

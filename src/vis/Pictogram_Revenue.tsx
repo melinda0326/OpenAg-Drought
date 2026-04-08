@@ -73,10 +73,6 @@ export default function PictogramRevenue({
         alignItems: "flex-start",
         gap: 12,
         width: "100%",
-        background: "rgba(0, 0, 0, 0.55)",
-        backdropFilter: "blur(8px)",
-        borderRadius: 12,
-        padding: "2rem",
       }}
     >
       {/* Loss label */}
@@ -105,7 +101,7 @@ export default function PictogramRevenue({
       {/* Pictogram grid */}
       <svg
         viewBox={`0 0 ${svgW} ${svgH}`}
-        style={{ display: "block", width: "100%", height: "auto",    marginLeft: "-20px", }}
+        style={{ display: "block", width: "80%", height: "auto",    marginLeft: "-20px", }}
       >
         {squares.map((sq, i) => (
           <rect

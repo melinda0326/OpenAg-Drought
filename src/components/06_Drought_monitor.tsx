@@ -126,7 +126,7 @@ export default function DroughtCumulativeAreaChart({
         severity of these dry periods.
       </p>
 
-      <Typography sx={{fontSize: "1rem", opacity:"60%", mt: "--space-sm", color: "#fff",marginBottom: "5rem",}}>
+      <Typography sx={{fontSize: "1rem", opacity:"60%", mt: "--space-sm", color: "#fff", marginBottom: "5rem",}}>
           Drought Index data source from{" "}
           <Link
             href="https://droughtmonitor.unl.edu/DmData/TimeSeries.aspx"
@@ -178,14 +178,12 @@ export default function DroughtCumulativeAreaChart({
             marginTop: "2rem",
             marginBottom: 0,
             fontStyle: "italic",
-            textAlign: "center",
+            textAlign: "left",
         }}
         >
         Hover to explore the detailed distribution of drought conditions
         </p>
       </div>
-
-      
 
     </div>
 

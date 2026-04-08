@@ -11,7 +11,7 @@
   /* ── universal overlay layout (keeps map visible) ── */
   --overlay-width: min(52vw, 1200px);
   --chart-width: min(62vw, 1400px);
-  --overlay-margin: 3%;
+  --overlay-margin: 5%;
 
 
   /* spacing scale */

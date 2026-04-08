@@ -23,6 +23,7 @@ export default function Scale_EMP() {
           mt: 2,
           lineHeight: 1.5,
           fontFamily: "Inter, system-ui, sans-serif",
+          textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
         }}
       >
         Agricultural commodities serve as inputs for robust food and beverage
@@ -37,6 +38,7 @@ export default function Scale_EMP() {
           color: "white",
           fontFamily: "Inter, system-ui, sans-serif",
           maxWidth: "90vw",
+          textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
         }}
       >
         600,000 jobs

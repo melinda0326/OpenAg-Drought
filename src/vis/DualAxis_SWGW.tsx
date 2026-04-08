@@ -211,8 +211,6 @@ export default function DualAxisAreaChart({
             }}
           />
 
-          {/* <Tooltip content={() => null} cursor={false} /> */}
-
           <Legend formatter={legendFormatter} wrapperStyle={{ paddingTop: 8 }} />
 
           <Area
@@ -223,6 +221,7 @@ export default function DualAxisAreaChart({
             stroke="none"
             fill={leftColor}
             fillOpacity={showLeft ? 0.35 : 0}
+            activeDot={false}
             isAnimationActive={animate}
             animationBegin={0}
             animationDuration={swDuration}
@@ -267,6 +266,7 @@ export default function DualAxisAreaChart({
             stroke="none"
             fill={rightColor}
             fillOpacity={showRight ? 0.5 : 0}
+            activeDot={false}
             isAnimationActive={animate}
             animationBegin={gwDelay}
             animationDuration={gwDuration}

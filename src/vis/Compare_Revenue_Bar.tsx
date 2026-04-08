@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 
 const selectedCounties = [
@@ -85,10 +85,24 @@ export default function OverlayRevBarChart({
   color2022 = "#FFCC80",
   colorLoss = "#E65100",
   moneyAxis = false,
-  width = 1000,
+  width: fixedWidth,
   height = 500,
 }: Props) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const [containerW, setContainerW] = useState(fixedWidth ?? 800);
+
+  useEffect(() => {
+    if (fixedWidth) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setContainerW(w);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fixedWidth]);
 
   const chartData = useMemo(() => {
     return preprocessData(data, col2019, col2022);
@@ -97,14 +111,14 @@ export default function OverlayRevBarChart({
   useEffect(() => {
     if (!chartData.length) return;
 
-    const margin = { top: 50, right: 130, bottom: 120, left: 70 };
-    const innerWidth = width - margin.left - margin.right;
+    const margin = { top: 50, right: 30, bottom: 50, left: 70 };
+    const innerWidth = containerW - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    svg.attr("width", width).attr("height", height);
+    svg.attr("width", containerW).attr("height", height);
 
     const g = svg
       .append("g")
@@ -210,7 +224,7 @@ export default function OverlayRevBarChart({
     // legend
     const legend = svg
       .append("g")
-      .attr("transform", `translate(${width - margin.right -40},${margin.top-40})`);
+      .attr("transform", `translate(${containerW - margin.right -40},${margin.top-40})`);
 
     const legendItems = [
       { label: "2019", color: colorLoss },
@@ -236,7 +250,7 @@ export default function OverlayRevBarChart({
     });
   }, [
     chartData,
-    width,
+    containerW,
     height,
     title,
     ylabel,
@@ -246,7 +260,7 @@ export default function OverlayRevBarChart({
   ]);
 
   return (
-    <div style={{ background: "none" }}>
+    <div ref={containerRef} style={{ background: "none", width: "100%" }}>
       <svg ref={svgRef} />
     </div>
   );

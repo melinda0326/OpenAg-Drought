@@ -33,6 +33,7 @@ export default function Scale_CV() {
             fontFamily: "Inter, system-ui, sans-serif",
             // maxWidth: "1000px",
             mx: "auto",
+            textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
           }}
         >
           8.5 million irrigated land
@@ -40,15 +41,15 @@ export default function Scale_CV() {
 
         <Typography
           sx={{
-            fontSize: "clamp(1rem, 1.5vw, 1.4rem)",
-            fontWeight: 600,
-            color: "white",
-            lineHeight: 1.5,
-            fontFamily: "Inter, system-ui, sans-serif",
-            maxWidth: "900px",
-            mx: "auto",
-            mt: 2,
-          }}
+          fontSize: "var(--subtitle-size)",
+          fontWeight: 600,
+          color: "white",
+          maxWidth: "50vw",
+          mt: 2,
+          lineHeight: 1.5,
+          fontFamily: "Inter, system-ui, sans-serif",
+          textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
+        }}
         >
           area used for agriculture in California, and nearly 9.3 million when we
           include multi-cropping in a year.

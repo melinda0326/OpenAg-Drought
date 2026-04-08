@@ -22,9 +22,10 @@ export default function Scale_RV() {
           mt: 2,
           lineHeight: 1.5,
           fontFamily: "Inter, system-ui, sans-serif",
+          textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
         }}
       >
-        Statewise, farms and ranches produce more than
+        Statewide, farms and ranches produce more than
         400 agricultural commodities and generate over
       </Typography>
       <Typography
@@ -35,6 +36,7 @@ export default function Scale_RV() {
           color: "white",
           fontFamily: "Inter, system-ui, sans-serif",
           maxWidth: "90vw",
+          textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
         }}
       >
         $60 billion revenue
