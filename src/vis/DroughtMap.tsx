@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Map, { Layer, Source } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import * as d3 from "d3";

@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import StorySection from "./ui/StorySection";
 export default function Scale_RV() {
   return (
     <Box

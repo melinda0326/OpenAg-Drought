@@ -66,13 +66,13 @@ export default function OpenExplorationPanel({
 
 
     const [pick, setPick] = React.useState<string>("");
-    const [query, setQuery] = React.useState("");
+    // const [query, setQuery] = React.useState("");
 
-    const filteredOptions = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return countyOptions;
-    return countyOptions.filter((c) => c.label.toLowerCase().includes(q));
-    }, [query, countyOptions]);
+    // const filteredOptions = React.useMemo(() => {
+    // const q = query.trim().toLowerCase();
+    // if (!q) return countyOptions;
+    // return countyOptions.filter((c) => c.label.toLowerCase().includes(q));
+    // }, [query, countyOptions]);
 
 
     const addPicked = () => {

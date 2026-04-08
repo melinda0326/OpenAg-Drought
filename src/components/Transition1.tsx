@@ -1,4 +1,4 @@
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography} from "@mui/material";
 import StorySection from "./ui/StorySection";
 
 export default function Transition1() {

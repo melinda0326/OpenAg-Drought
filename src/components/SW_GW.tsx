@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as d3 from "d3";
 
 import DualAxisAreaChart, {
@@ -36,7 +36,6 @@ export default function SurfaceGroundwaterChart({
   surfaceWaterCsv = "/data/surface_supplies_ag_annual_sum.csv",
   groundwaterCsv = "/data/change_in_gw.csv",
   height = 400,
-  title = "Surface Water vs Groundwater Over Time",
 }: SurfaceGroundwaterChartProps) {
   const [data, setData] = useState<ChartRow[]>([]);
   const [loading, setLoading] = useState(true);

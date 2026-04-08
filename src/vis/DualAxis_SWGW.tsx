@@ -9,7 +9,6 @@ import {
   Legend,
   CartesianGrid,
   ReferenceLine,
-  Tooltip,
 } from "recharts";
 
 export type DualAxisDatum = {

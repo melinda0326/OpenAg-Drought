@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Map, { Layer, NavigationControl, Source } from "react-map-gl";
+import { useEffect, useMemo, useState } from "react";
+import Map from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import { Scrollama, Step } from "react-scrollama";
 
@@ -23,9 +23,9 @@ type StepItem = {
 export default function ScrollyCaliforniaMap(){
   const token = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
 
-  const [geojsonData, setGeojsonData] = useState<FeatureCollection<Geometry> | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setGeojsonData] = useState<FeatureCollection<Geometry> | null>(null);
+  const [, setLoading] = useState<boolean>(true);
+  const [, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<StepId>(0);
 
   const steps = useMemo<StepItem[]>(

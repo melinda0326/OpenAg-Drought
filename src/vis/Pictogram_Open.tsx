@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 type Props = {
   label: string;
@@ -61,8 +61,8 @@ export default function Pictogram({
     return arr;
   }, [totalSquares, lossSquares, cols, squareSize, gap]);
 
-  const lossPct =
-    baseValue > 0 ? ((loss / baseValue) * 100).toFixed(0) : "0";
+  // const lossPct =
+  //   baseValue > 0 ? ((loss / baseValue) * 100).toFixed(0) : "0";
 
   return (
     <div

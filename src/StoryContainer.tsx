@@ -66,8 +66,7 @@ function getCountyNameFromFeature(f: any): string {
 
 export default function StoryContainer() {
   const [activeSection, setActiveSection] = useState<StepId>("opener");
-  const [isMapReady, setIsMapReady] = useState(false);
-
+  const [,setIsMapReady] = useState(false);
   const [shortage, setShortage] = useState<number>(0);
   const [metric, setMetric] = useState<MetricKey>("revenue_pct");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Map, { Layer, NavigationControl, Source, Marker } from "react-map-gl";
+import Map, { Layer, Source, Marker } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Typography, Link } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import {Typography, Link } from "@mui/material";
 import * as d3 from "d3";
 import StackedAreaChart, { type BandDef } from "../vis/StackedAreaChart";
 
