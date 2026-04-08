@@ -1,0 +1,201 @@
+Class,Class_Description,Number,Description,Number_cleaned,CROPTYP2,Irrigated,cop_type
+G,Grain and hay crops,1,Barley,1,G1,1,Field and grain
+G,Grain and hay crops,2,Wheat,2,G2,1,Field and grain
+G,Grain and hay crops,3,Oats,3,G3,1,Field and grain
+G,Grain and hay crops,6,Miscellaneous grain and hay,6,G6,1,Field and grain
+G,Grain and hay crops,7,Mixed grain and hay,7,G7,1,Field and grain
+G,Grain and hay crops,**, No subclass - Grain and hay crops,,G,1,Field and grain
+R,Rice,1,Rice,1,R1,1,Rice
+R,Rice,2,Wild Rice,2,R2,1,Rice
+R,Rice,**, No subclass - Rice,,R,1,Rice
+F,Field crops,1,Cotton,1,F1,1,Field and grain
+F,Field crops,2,Safflower,2,F2,1,Field and grain
+F,Field crops,3,Flax,3,F3,1,Field and grain
+F,Field crops,4,Hops,4,F4,1,Field and grain
+F,Field crops,5,Sugar beets,5,F5,1,Field and grain
+F,Field crops,6,Corn (field & sweet),6,F6,1,Field and grain
+F,Field crops,7,Grain sorghum,7,F7,1,Field and grain
+F,Field crops,8,Sudan,8,F8,1,Field and grain
+F,Field crops,9,Castor beans,9,F9,1,Field and grain
+F,Field crops,10,Beans (dry),10,F10,1,Field and grain
+F,Field crops,11,Miscellaneous field,11,F11,1,Field and grain
+F,Field crops,12,Sunflowers,12,F12,1,Field and grain
+F,Field crops,13,Hybrid sorghum/sudan,13,F13,1,Field and grain
+F,Field crops,14,Millet,14,F14,1,Field and grain
+F,Field crops,15,Sugar cane,15,F15,1,Field and grain
+F,Field crops,16,"Corn, Sorghum or Sudan grouped for remote sensing only",16,F16,1,Field and grain
+F,Field crops,**, No subclass - Field crops,,F,1,Field and grain
+P,Pasture,1,Alfalfa & alfalfa mixtures,1,P1,1,Alfalfa and pasture
+P,Pasture,2,Clover,2,P2,1,Alfalfa and pasture
+P,Pasture,3,Mixed pasture,3,P3,1,Alfalfa and pasture
+P,Pasture,4,Native pasture,4,P4,1,Alfalfa and pasture
+P,Pasture,5,Induced high water table native pasture,5,P5,1,Alfalfa and pasture
+P,Pasture,6,Miscellaneous grasses,6,P6,1,Alfalfa and pasture
+P,Pasture,7,Turf farms,7,P7,1,Alfalfa and pasture
+P,Pasture,8,Bermuda grass,8,P8,1,Alfalfa and pasture
+P,Pasture,9,Rye grass,9,P9,1,Alfalfa and pasture
+P,Pasture,10,Klein grass,10,P10,1,Alfalfa and pasture
+P,Pasture,**, No subclass - Pasture,,P,1,Alfalfa and pasture
+T,"Truck, nursery & berry crops",1,Artichokes,1,T1,1,Vegetables
+T,"Truck, nursery & berry crops",2,Asparagus,2,T2,1,Vegetables
+T,"Truck, nursery & berry crops",3,Beans (green),3,T3,1,Vegetables
+T,"Truck, nursery & berry crops",4,Cole crops (mixture of 22-25),4,T4,1,Vegetables
+T,"Truck, nursery & berry crops",6,Carrots,6,T6,1,Vegetables
+T,"Truck, nursery & berry crops",7,Celery,7,T7,1,Vegetables
+T,"Truck, nursery & berry crops",8,Lettuce (all types),8,T8,1,Vegetables
+T,"Truck, nursery & berry crops",9,"Melons, squash, and cucumbers (all types)",9,T9,1,Vegetables
+T,"Truck, nursery & berry crops",10,Onions & garlic,10,T10,1,Vegetables
+T,"Truck, nursery & berry crops",11,Peas,11,T11,1,Vegetables
+T,"Truck, nursery & berry crops",12,Potatoes,12,T12,1,Vegetables
+T,"Truck, nursery & berry crops",13,Sweet potatoes,13,T13,1,Vegetables
+T,"Truck, nursery & berry crops",14,Spinach,14,T14,1,Vegetables
+T,"Truck, nursery & berry crops",15,Tomatoes (processing),15,T15,1,Vegetables
+T,"Truck, nursery & berry crops",16,"Flowers, nursery & Christmas tree farms",16,T16,1,Vegetables
+T,"Truck, nursery & berry crops",17,Mixed (four or more),17,T17,1,Vegetables
+T,"Truck, nursery & berry crops",18,Miscellaneous truck,18,T18,1,Vegetables
+T,"Truck, nursery & berry crops",19,Bush berries,19,T19,1,Vegetables
+T,"Truck, nursery & berry crops",20,Strawberries,20,T20,1,Vegetables
+T,"Truck, nursery & berry crops",21,"Peppers (chili, bell, etc.)",21,T21,1,Vegetables
+T,"Truck, nursery & berry crops",22,Broccoli,22,T22,1,Vegetables
+T,"Truck, nursery & berry crops",23,Cabbage,23,T23,1,Vegetables
+T,"Truck, nursery & berry crops",24,Cauliflower,24,T24,1,Vegetables
+T,"Truck, nursery & berry crops",25,Brussels sprouts,25,T25,1,Vegetables
+T,"Truck, nursery & berry crops",26,Tomatoes (market),26,T26,1,Vegetables
+T,"Truck, nursery & berry crops",27,Greenhouse,27,T27,1,Vegetables
+T,"Truck, nursery & berry crops",28,Blueberries,28,T28,1,Vegetables
+T,"Truck, nursery & berry crops",29,Asian leafy vegetables,29,T29,1,Vegetables
+T,"Truck, nursery & berry crops",30,Lettuce or Leafy Greens grouped for remote sensing only,30,T30,1,Vegetables
+T,"Truck, nursery & berry crops",31,Potato or Sweet potato grouped for remote sensing only,31,T31,1,Vegetables
+T,"Truck, nursery & berry crops",**," No subclass - Truck, nursery & berry crops",,T,1,Vegetables
+D,Deciduous fruits and nuts,1,Apples,1,D1,1,Orchards
+D,Deciduous fruits and nuts,2,Apricots,2,D2,1,Orchards
+D,Deciduous fruits and nuts,3,Cherries,3,D3,1,Orchards
+D,Deciduous fruits and nuts,5,Peaches and nectarines,5,D5,1,Orchards
+D,Deciduous fruits and nuts,6,Pears,6,D6,1,Orchards
+D,Deciduous fruits and nuts,7,Plums,7,D7,1,Orchards
+D,Deciduous fruits and nuts,8,Prunes,8,D8,1,Orchards
+D,Deciduous fruits and nuts,9,Figs,9,D9,1,Orchards
+D,Deciduous fruits and nuts,10,Miscellaneous deciduous,10,D10,1,Orchards
+D,Deciduous fruits and nuts,11,Mixed deciduous,11,D11,1,Orchards
+D,Deciduous fruits and nuts,12,Almonds,12,D12,1,Orchards
+D,Deciduous fruits and nuts,13,Walnuts,13,D13,1,Orchards
+D,Deciduous fruits and nuts,14,Pistachios,14,D14,1,Orchards
+D,Deciduous fruits and nuts,15,Pomegranates,15,D15,1,Orchards
+D,Deciduous fruits and nuts,16,"Plums, Prunes or Apricots grouped for remote sensing only",16,D16,1,Orchards
+D,Deciduous fruits and nuts,**, No subclass - Deciduous fruits and nuts,,D,1,Orchards
+C,Citrus and subtropical,1,Grapefruit,1,C1,1,Orchards
+C,Citrus and subtropical,2,Lemons,2,C2,1,Orchards
+C,Citrus and subtropical,3,Oranges,3,C3,1,Orchards
+C,Citrus and subtropical,4,Dates,4,C4,1,Orchards
+C,Citrus and subtropical,5,Avocados,5,C5,1,Orchards
+C,Citrus and subtropical,6,Olives,6,C6,1,Orchards
+C,Citrus and subtropical,7,Miscellaneous subtropical fruit,7,C7,1,Orchards
+C,Citrus and subtropical,8,Kiwis,8,C8,1,Orchards
+C,Citrus and subtropical,9,Jojoba,9,C9,1,Orchards
+C,Citrus and subtropical,10,Eucalyptus,10,C10,1,Orchards
+C,Citrus and subtropical,11,Mixed subtropical fruits,11,C11,1,Orchards
+C,Citrus and subtropical,**, No subclass - Citrus and subtropical,,C,1,Orchards
+V,Vineyards,1,Table grapes,1,V1,1,Vineyards
+V,Vineyards,2,Wine grapes,2,V2,1,Vineyards
+V,Vineyards,3,Raisin grapes,3,V3,1,Vineyards
+V,Vineyards,**, No subclass - Vineyards,,V,1,Vineyards
+YP,Young Perennial,**, No subclass - Young Perennial,,YP,1,Orchards
+I,Idle,1,"Land not cropped the current or previous crop season, but cropped within the past three years",1,I1,1,Other
+I,Idle,2,New lands being prepared for crop production,2,I2,1,Other
+I,Idle,4,"Long term, land consistently idle for four or more years",4,I4,1,Other
+I,Idle,**, No subclass - Idle,,I,1,Other
+X,Not cropped or unclassified,**,Not cropped or unclassified,,X,0,Other
+S,Semi-agricultural & incidental to agriculture,1,Farmsteads (includes a farm residence),1,S1,0,Other
+S,Semi-agricultural & incidental to agriculture,2,Livestock feed lot operations,2,S2,0,Other
+S,Semi-agricultural & incidental to agriculture,3,Dairies,3,S3,0,Other
+S,Semi-agricultural & incidental to agriculture,4,Poultry farms,4,S4,0,Other
+S,Semi-agricultural & incidental to agriculture,5,Farmsteads (without a farm residence),5,S5,0,Other
+S,Semi-agricultural & incidental to agriculture,6,"Miscellaneous semi-agricultural (small roads, ditches, non-planted areas of cropped fields)",6,S6,0,Other
+S,Semi-agricultural & incidental to agriculture,**, No subclass - Semi-agricultural & incidental to agriculture,,S,0,Other
+U,Urban,**,Urban - generic nomenclature with no subclass,,U,0,Other
+UR,Urban residential,1,Single family dwellings with lot sizes greater than 1 acre up to 5 acres.,1,UR1,0,Other
+UR,Urban residential,2,Single family dwellings with a density of 1 unit/acre up to 8+ units per acre.,2,UR2,0,Other
+UR,Urban residential,3,"Multiple family (apartments, condominiums, townhouses, barracks, bungalows, duplexes, etc.).",3,UR3,0,Other
+UR,Urban residential,4,Trailer courts.,4,UR4,0,Other
+UR,Urban residential,11,0% to 25% area irrigated.,11,UR11,0,Other
+UR,Urban residential,12,26% to 50% area irrigated.,12,UR12,0,Other
+UR,Urban residential,13,51% to 75% area irrigated.,13,UR13,0,Other
+UR,Urban residential,14,76% to 100% area irrigated.,14,UR14,0,Other
+UR,Urban residential,21,0% to 25% area irrigated.,21,UR21,0,Other
+UR,Urban residential,22,26% to 50% area irrigated.,22,UR22,0,Other
+UR,Urban residential,23,51% to 75% area irrigated.,23,UR23,0,Other
+UR,Urban residential,24,76% to 100% area irrigated.,24,UR24,0,Other
+UR,Urban residential,31,0% to 25% area irrigated.,31,UR31,0,Other
+UR,Urban residential,32,26% to 50% area irrigated.,32,UR32,0,Other
+UR,Urban residential,33,51% to 75% area irrigated.,33,UR33,0,Other
+UR,Urban residential,34,76% to 100% area irrigated.,34,UR34,0,Other
+UR,Urban residential,41,0% to 25% area irrigated.,41,UR41,0,Other
+UR,Urban residential,42,26% to 50% area irrigated.,42,UR42,0,Other
+UR,Urban residential,43,51% to 75% area irrigated.,43,UR43,0,Other
+UR,Urban residential,44,76% to 100% area irrigated.,44,UR44,0,Other
+UC,Commercial,1,"Offices, retailers, etc.",1,UC1,0,Other
+UC,Commercial,2,Hotels,2,UC2,0,Other
+UC,Commercial,3,Motels,3,UC3,0,Other
+UC,Commercial,4,"Recreation vehicle parking, camp sites",4,UC4,0,Other
+UC,Commercial,5,"Institutions (hospitals, prisons, reformatories, asylums, etc., having a reasonably constant 24-hour resident population)",5,UC5,0,Other
+UC,Commercial,6,Schools (yards to be mapped separately if large enough),6,UC6,0,Other
+UC,Commercial,7,"Municipal auditoriums, theaters, churches, buildings and stands associated with race tracks, football stadiums, baseball parks, rodeo arenas, amusement parks, etc.",7,UC7,0,Other
+UC,Commercial,8,Miscellaneous highwater use (to be used to indicate a high water use condition not covered by the above categories.),8,UC8,0,Other
+UC,Commercial,**, No subclass - Commercial,,UC,0,Other
+UI,Industrial,1,"Manufacturing, assembling, and general processing",1,UI1,0,Other
+UI,Industrial,2,"Extractive industries (oil fields, rock quarries, gravel pits, rock and gravel processing plants, etc.)",2,UI2,0,Other
+UI,Industrial,3,"Storage and distribution (warehouses, substations, railroad marshalling yards, tank farms, etc.)",3,UI3,0,Other
+UI,Industrial,6,Saw mills,6,UI6,0,Other
+UI,Industrial,7,Oil refineries,7,UI7,0,Other
+UI,Industrial,8,Paper mills,8,UI8,0,Other
+UI,Industrial,9,Meat packing plants,9,UI9,0,Other
+UI,Industrial,10,Steel and aluminum mills,10,UI10,0,Other
+UI,Industrial,11,Fruit and vegetable canneries and general food processing,11,UI11,0,Other
+UI,Industrial,12,Miscellaneous highwater use (to be used to indicate a high water use condition not covered by other categories.),12,UI12,0,Other
+UI,Industrial,13,Sewage treatment plant including ponds,13,UI13,0,Other
+UI,Industrial,14,"Waste accumulation sites (public dumps, sewage sludge sites, landfill and hazardous waste sites, etc.)",14,UI14,0,Other
+UI,Industrial,15,"Wind farms, solar collector farms, etc.",15,UI15,0,Other
+UI,Industrial,**, No subclass - Industrial,,UI,0,Other
+UL,Urban landscape,1,Lawn area – irrigated,1,UL1,0,Other
+UL,Urban landscape,2,Golf course – irrigated,2,UL2,0,Other
+UL,Urban landscape,3,Ornamental landscape (excluding lawns) – irrigated,3,UL3,0,Other
+UL,Urban landscape,4,Cemeteries – irrigated,4,UL4,0,Other
+UL,Urban landscape,5,Cemeteries – not irrigated,5,UL5,0,Other
+UL,Urban landscape,**, No subclass - Urban landscape,,UL,0,Other
+UV,Vacant,1,"Unpaved areas (vacant lots, graveled surfaces, play yards, developable open lands within urban areas, etc.)",1,UV1,0,Other
+UV,Vacant,3,Railroad right of way,3,UV3,0,Other
+UV,Vacant,4,"Paved areas (parking lots, paved roads, oiled surfaces, flood control channels, tennis court areas, auto sales lots, etc.)",4,UV4,0,Other
+UV,Vacant,6,Airport runways,6,UV6,0,Other
+UV,Vacant,7,Land in urban area that is not developable,7,UV7,0,Other
+UV,Vacant,**, No subclass - Vacant,,UV,0,Other
+NC,Native class,**,Native class - generic nomenclature with no subclass,,NC,0,Other
+NV,Native vegetation,1,Grassland,1,NV1,0,Other
+NV,Native vegetation,2,Light brush,2,NV2,0,Other
+NV,Native vegetation,3,Medium brush,3,NV3,0,Other
+NV,Native vegetation,4,Heavy brush,4,NV4,0,Other
+NV,Native vegetation,5,Brush and timber,5,NV5,0,Other
+NV,Native vegetation,6,Forest,6,NV6,0,Other
+NV,Native vegetation,7,Oak woodland,7,NV7,0,Other
+NV,Native vegetation,**, No subclass - Native vegetation,,NV,0,Other
+NR,Riparian vegetation,1,"Marsh lands, tules and sedges",1,NR1,0,Other
+NR,Riparian vegetation,2,Natural highwater table meadow,2,NR2,0,Other
+NR,Riparian vegetation,3,"Trees, shrubs or other larger stream side or watercourse vegetation",3,NR3,0,Other
+NR,Riparian vegetation,4,"Seasonal duck marsh, dry or only partially wet during summer",4,NR4,0,Other
+NR,Riparian vegetation,5,"Permanent duck marsh, flooded during summer",5,NR5,0,Other
+NR,Riparian vegetation,**, No subclass - Riparian vegetation,,NR,0,Other
+NW,Water surface,1,River or stream (natural fresh water channels),1,NW1,0,Other
+NW,Water surface,2,Water channel (all sizes - ditches and canals - delivering water for irrigation and urban use),2,NW2,0,Other
+NW,Water surface,3,Water channel (all sizes - ditches and canals - for removing on-farm drainage water),3,NW3,0,Other
+NW,Water surface,4,"Freshwater lake, reservoir, or pond (all sizes)",4,NW4,0,Other
+NW,Water surface,5,"Brackish and saline water (includes areas in estuaries, inland water bodies, the ocean, etc.)",5,NW5,0,Other
+NW,Water surface,6,"Wastewater pond (dairy, sewage, cannery, winery, etc.)",6,NW6,0,Other
+NW,Water surface,7,Paved water conveyance channels within urban areas (mainly for flood control),7,NW7,0,Other
+NW,Water surface,**, No subclass - Water surface,,NW,0,Other
+NB,Barren and Wasteland,1,Dry stream channels,1,NB1,0,Other
+NB,Barren and Wasteland,2,Mine tailings,2,NB2,0,Other
+NB,Barren and Wasteland,3,Barren land,3,NB3,0,Other
+NB,Barren and Wasteland,4,Salt flats,4,NB4,0,Other
+NB,Barren and Wasteland,5,Sand dunes,5,NB5,0,Other
+NB,Barren and Wasteland,**, No subclass - Barren and Wasteland,,NB,0,Other
+E,Entry denied,**,Entry denied - no subclass,,E,0,Other
+Z,Outside of study area,**,Outside of study area - no subclass,,Z,0,Other

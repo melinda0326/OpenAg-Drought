@@ -1,7 +1,26 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  /* ── universal typography scale ── */
+  --title-size: 2.5rem;     /* 36px */
+  --subtitle-size: 1.75rem;   /* 24px */
+  --body-size: 1.125rem;         /* 16px */
+
+  /* ── universal overlay layout (keeps map visible) ── */
+  --overlay-width: min(52vw, 1200px);
+  --chart-width: min(62vw, 1400px);
+  --overlay-margin: 3%;
+
+
+  /* spacing scale */
+  --space-xs: 0.5rem;    /* 8px */
+  --space-sm: 0.75rem;   /* 12px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -65,4 +84,38 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.scrolly::-webkit-scrollbar {
+  display: none;
+}
+
+.scrolly {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Bar animation for precipitation chart */
+@keyframes barGrowFromZero {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scaleY(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.bar-hidden {
+  opacity: 0;
+}
+
+.bar-animate {
+  opacity: 0;
+  animation: barGrowFromZero 0.35s ease-out forwards;
 }

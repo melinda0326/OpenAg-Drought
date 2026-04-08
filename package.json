@@ -10,11 +10,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.9",
+    "@turf/bbox": "^7.3.3",
+    "@turf/turf": "^7.3.4",
+    "d3": "^7.9.0",
+    "d3-dsv": "^3.0.1",
+    "framer-motion": "^12.38.0",
+    "gl-matrix": "^3.4.4",
+    "mapbox-gl": "^3.17.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-countup": "^6.5.3",
+    "react-dom": "^19.2.0",
+    "react-map-gl": "^7.1.7",
+    "react-router-dom": "^7.13.1",
+    "react-scrollama": "^2.4.2",
+    "recharts": "^3.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/d3": "^7.4.3",
+    "@types/d3-dsv": "^3.0.7",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
