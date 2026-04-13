@@ -991,7 +991,7 @@ export default function CaliforniaMap({
           : CROP_LEGEND
         ).map(({ code, color, label }) => {
           const isActive = hoveredCropCode === code;
-          const isDimmed = hoveredCropCode !== null && hoveredCropCode !== code;
+          // const isDimmed = hoveredCropCode !== null && hoveredCropCode !== code;
 
           return (
             <div
