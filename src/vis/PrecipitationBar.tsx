@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
 export type PrecipitationRow = {
   rawDate: number;
@@ -15,6 +15,7 @@ type Props = {
   negativeColor?: string;
   svgWidth?: string | number;
   title?: string;
+  scrollProgress?: number;
 };
 
 export default function PrecipitationBarChart({
@@ -25,24 +26,8 @@ export default function PrecipitationBarChart({
   negativeColor = "#a80332",
   svgWidth = "75%",
   title = "Annual Precipitation Anomaly",
+  scrollProgress = 0,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isInView, setIsInView] = useState(false);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   const margin = { top: 50, right: 20, bottom: 76, left: 72 };
   const innerW = width - margin.left - margin.right;
@@ -107,7 +92,7 @@ export default function PrecipitationBarChart({
   }
 
   return (
-    <div ref={containerRef}>
+    <div>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         style={{
@@ -165,6 +150,13 @@ export default function PrecipitationBarChart({
         const rectY = Math.min(yTop, yBottom);
         const rectH = Math.max(Math.abs(yBottom - yTop), 1);
 
+        // Each bar has a threshold based on its index
+        const barThreshold = (i / rows.length) * 0.85;
+        const barProgress = Math.max(0, Math.min(1, (scrollProgress - barThreshold) / 0.15));
+        // Slight overshoot for the bounce effect
+        const scale = barProgress >= 1 ? 1 : barProgress < 0.01 ? 0 : barProgress * 1.05;
+        const clampedScale = Math.min(scale, 1.05);
+
         return (
           <rect
             key={`${d.rawDate}-${i}`}
@@ -175,11 +167,11 @@ export default function PrecipitationBarChart({
             fill={d.anomaly >= 0 ? positiveColor : negativeColor}
             stroke="white"
             strokeWidth={0.5}
-            className={isInView ? "bar-animate" : "bar-hidden"}
             style={{
               transformOrigin: `center ${d.anomaly >= 0 ? "bottom" : "top"}`,
               transformBox: "fill-box" as any,
-              ...(isInView ? { animationDelay: `${i * 45}ms` } : {}),
+              opacity: barProgress,
+              transform: `scaleY(${clampedScale})`,
             }}
           >
             <title>

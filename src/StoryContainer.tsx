@@ -265,34 +265,6 @@ export default function StoryContainer() {
         />
       </Box>
 
-      {/* Sticky section title for compare steps */}
-      {/* {(activeSection === "compare-image" || activeSection === "compare-land") && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: "5rem",
-            left: 0,
-            right: 0,
-            zIndex: 3,
-            px: "var(--overlay-margin)",
-            py: "1.5rem",
-            pointerEvents: "none",
-          }}
-        >
-          <h2
-            style={{
-              color: "white",
-              fontSize: "var(--title-size)",
-              fontWeight: 700,
-              margin: 0,
-              maxWidth: "var(--overlay-width)",
-            }}
-          >
-            Agricultural Impact: Idled Farmland
-          </h2>
-        </Box>
-      )} */}
-
       <Box
         component="main"
         sx={{
@@ -302,16 +274,10 @@ export default function StoryContainer() {
           pointerEvents: "none",
         }}
       >
-        {/* <Scrollama
-          offset={0.5}
-          
-          onStepEnter={({ data }) => setActiveSection(data as StepId)}
-          
-        > */}
         <Scrollama
         offset={0.5}
         onStepEnter={({ data }) => {
-            console.log("onStepEnter fired:", data); // 👈
+            console.log("onStepEnter fired:", data);
             setActiveSection(data as StepId);
         }}
         >
@@ -326,19 +292,19 @@ export default function StoryContainer() {
         </Step>
 
         <Step data="state-crop-cv">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_CV />
             </div>
         </Step>
 
          <Step data="state-crop-rv">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_RV />
             </div>
         </Step>
 
          <Step data="state-crop-emp">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_EMP />
             </div>
         </Step>
@@ -356,13 +322,13 @@ export default function StoryContainer() {
             </Step>
 
         <Step data="temperature-trend">
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+          <div style={{ pointerEvents: "auto" }}>
                 <TemperatureTrend />
             </div>
           </Step>
 
-        <Step data="precipitation_bar"> 
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+        <Step data="precipitation_bar">
+          <div style={{ pointerEvents: "auto" }}>
                 <PrecipitationAnomalyChart/>
             </div>
           </Step>
@@ -374,7 +340,7 @@ export default function StoryContainer() {
           </Step>
 
           <Step data="sw_gw">
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+          <div style={{ pointerEvents: "auto" }}>
                 <SurfaceGroundwaterChart/>
             </div>
           </Step>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -18,6 +18,7 @@ export type DualAxisDatum = {
 };
 
 export type ViewMode = "left" | "right" | "both";
+type SeriesKey = "leftValue" | "rightValue";
 
 type Props = {
   data: DualAxisDatum[];
@@ -38,8 +39,8 @@ type Props = {
   viewMode: ViewMode;
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 
-  leftDataKey?: string;
-  rightDataKey?: string;
+  leftDataKey?: SeriesKey;
+  rightDataKey?: SeriesKey;
 
   referenceX?: number;
   width?: string | number;
@@ -47,8 +48,7 @@ type Props = {
   leftTickFormatter?: (v: number) => string;
   rightTickFormatter?: (v: number) => string;
 
-  animateOnView?: boolean;
-  animationThreshold?: number;
+  scrollProgress?: number;
 
   swDuration?: number;
   gwDelay?: number;
@@ -83,38 +83,71 @@ export default function DualAxisAreaChart({
   leftTickFormatter,
   rightTickFormatter,
 
-  animateOnView = true,
-  animationThreshold = 0.3,
+  scrollProgress = 1,
 
   swDuration = 3000,
   gwDelay = 1800,
   gwDuration = 3000,
 }: Props) {
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const [animKey, setAnimKey] = useState(0);
-  const wasInView = useRef(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const transitionTimeoutRef = useRef<number | null>(null);
 
+  // Handle viewMode changes with opacity transition
   useEffect(() => {
-    if (!animateOnView) return;
+    setIsTransitioning(true);
+    if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+    transitionTimeoutRef.current = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+    return () => {
+      if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+    };
+  }, [viewMode]);
 
-    const el = chartRef.current;
-    if (!el) return;
+  // Scroll-based data: left series reveals in first 60%, right series reveals from 30%-100%
+const scrollData = useMemo(() => {
+  if (!data.length) return [];
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !wasInView.current) {
-          setAnimKey((k) => k + 1);
-        }
-        wasInView.current = entry.isIntersecting;
-      },
-      { threshold: animationThreshold }
-    );
+  const n = data.length;
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [animateOnView, animationThreshold]);
+  // Total animation timeline
+  const totalDuration = swDuration + gwDelay + gwDuration;
 
-  const animate = animateOnView;
+  // Convert duration segments into 0–1 scroll ranges
+  const swEnd = swDuration / totalDuration;
+  const gwStart = (swDuration + gwDelay) / totalDuration;
+
+  // SW progresses only during its segment
+  const leftProgress =
+    swEnd === 0 ? 1 : Math.max(0, Math.min(1, scrollProgress / swEnd));
+
+  // GW starts only after SW is done + delay is passed
+  const rightProgress =
+    gwDuration === 0
+      ? 1
+      : Math.max(
+          0,
+          Math.min(1, (scrollProgress - gwStart) / (1 - gwStart))
+        );
+
+    const leftCount = Math.ceil(n * leftProgress);
+    const rightCount = Math.ceil(n * rightProgress);
+
+    return data.map((d, i) => ({
+      ...d,
+      [leftDataKey]: i < leftCount ? d[leftDataKey] : null,
+      [rightDataKey]: i < rightCount ? d[rightDataKey] : null,
+    }));
+  }, [
+    data,
+    scrollProgress,
+    leftDataKey,
+    rightDataKey,
+    swDuration,
+    gwDelay,
+    gwDuration,
+  ]);
 
   // Keep both series rendered at all times.
   // Only dim the non-focused one.
@@ -154,182 +187,170 @@ export default function DualAxisAreaChart({
 
   return (
     <div ref={chartRef} style={{ width }}>
-      <ResponsiveContainer width="100%" height={height}>
-        <ComposedChart
-          key={animate ? animKey : "static"}
-          data={data}
-          margin={{ top: 10, right: 24, left: 24, bottom: 10 }}
-        >
-          <CartesianGrid
-            stroke="white"
-            strokeOpacity={0.08}
-            vertical={false}
-          />
-
-          <XAxis
-            dataKey="year"
-            tick={{ fill: "white", fontSize: "var(--body-size)" }}
-            axisLine={{ stroke: "white", strokeWidth: 1 }}
-            tickLine={{ stroke: "white" }}
-            tickMargin={10}
-            ticks={data.map((d) => d.year).filter((year) => year % 2 === 0)}
-          />
-
-          <YAxis
-            yAxisId="left"
-            domain={leftDomain}
-            tick={{
-              fill: `rgba(255,255,255,${leftAxisOpacity})`,
-              fontSize: "var(--body-size)",
-            }}
-            axisLine={{
-              stroke: `rgba(255,255,255,${leftAxisOpacity})`,
-              strokeWidth: 1,
-            }}
-            tickLine={{ stroke: `rgba(255,255,255,${leftAxisOpacity})` }}
-            tickFormatter={leftTickFormatter}
-            label={{
-              value: leftAxisLabel,
-              fontSize: "var(--body-size)",
-              angle: -90,
-              position: "center",
-              fill: `rgba(255,255,255,${leftAxisOpacity})`,
-              dx: -38,
-            }}
-          />
-
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            domain={rightDomain}
-            tick={{
-              fill: `rgba(255,255,255,${rightAxisOpacity})`,
-              fontSize: "var(--body-size)",
-            }}
-            axisLine={{
-              stroke: `rgba(255,255,255,${rightAxisOpacity})`,
-              strokeWidth: 1,
-            }}
-            tickLine={{ stroke: `rgba(255,255,255,${rightAxisOpacity})` }}
-            tickFormatter={rightTickFormatter}
-            label={{
-              value: rightAxisLabel,
-              fontSize: "var(--body-size)",
-              angle: 90,
-              position: "center",
-              fill: `rgba(255,255,255,${rightAxisOpacity})`,
-              dx: 38,
-            }}
-          />
-
-          <Legend formatter={legendFormatter} wrapperStyle={{ paddingTop: 8 }} />
-
-          {/* LEFT SERIES */}
-          <Area
-            yAxisId="left"
-            type="monotone"
-            dataKey={leftDataKey}
-            name={leftName}
-            stroke="none"
-            fill={leftColor}
-            fillOpacity={0.35 * leftOpacity}
-            activeDot={false}
-            isAnimationActive={animate}
-            animationBegin={0}
-            animationDuration={swDuration}
-            animationEasing="ease-out"
-            legendType="none"
-          />
-          <Line
-            yAxisId="left"
-            type="monotone"
-            dataKey={leftDataKey}
-            stroke="white"
-            strokeOpacity={leftOpacity}
-            strokeWidth={5}
-            dot={false}
-            activeDot={false}
-            style={{ pointerEvents: "none" }}
-            isAnimationActive={animate}
-            animationBegin={0}
-            animationDuration={swDuration}
-            animationEasing="ease-out"
-            legendType="none"
-          />
-          <Line
-            yAxisId="left"
-            type="monotone"
-            dataKey={leftDataKey}
-            name={leftName}
-            stroke={leftColor}
-            strokeOpacity={leftOpacity}
-            strokeWidth={3}
-            dot={false}
-            activeDot={false}
-            isAnimationActive={animate}
-            animationBegin={0}
-            animationDuration={swDuration}
-            animationEasing="ease-out"
-          />
-
-          {/* RIGHT SERIES */}
-          <Area
-            yAxisId="right"
-            type="monotone"
-            dataKey={rightDataKey}
-            name={rightName}
-            stroke="none"
-            fill={rightColor}
-            fillOpacity={0.5 * rightOpacity}
-            activeDot={false}
-            isAnimationActive={animate}
-            animationBegin={gwDelay}
-            animationDuration={gwDuration}
-            animationEasing="ease-out"
-            legendType="none"
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey={rightDataKey}
-            stroke="white"
-            strokeOpacity={rightOpacity}
-            strokeWidth={5}
-            dot={false}
-            activeDot={false}
-            isAnimationActive={animate}
-            animationBegin={gwDelay}
-            animationDuration={gwDuration}
-            animationEasing="ease-out"
-            legendType="none"
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey={rightDataKey}
-            name={rightName}
-            stroke={rightColor}
-            strokeOpacity={rightOpacity}
-            strokeWidth={2.5}
-            dot={false}
-            activeDot={false}
-            isAnimationActive={animate}
-            animationBegin={gwDelay}
-            animationDuration={gwDuration}
-            animationEasing="ease-out"
-          />
-
-          {referenceX != null && (
-            <ReferenceLine
-              yAxisId="right"
-              x={referenceX}
-              stroke="rgba(255,255,255,0.3)"
-              strokeOpacity={rightOpacity}
-              strokeDasharray="4 4"
+      <div
+        style={{
+          opacity: isTransitioning ? 0.4 : 1,
+          transition: "opacity 0.3s ease-in-out",
+        }}
+      >
+        <ResponsiveContainer width="100%" height={height}>
+          <ComposedChart
+            data={scrollData}
+            margin={{ top: 10, right: 24, left: 24, bottom: 10 }}
+          >
+            <CartesianGrid
+              stroke="white"
+              strokeOpacity={0.08}
+              vertical={false}
             />
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
+
+            <XAxis
+              dataKey="year"
+              tick={{ fill: "white", fontSize: "var(--body-size)" }}
+              axisLine={{ stroke: "white", strokeWidth: 1 }}
+              tickLine={{ stroke: "white" }}
+              tickMargin={10}
+              ticks={data.map((d) => d.year).filter((year) => year % 2 === 0)}
+            />
+
+            <YAxis
+              yAxisId="left"
+              domain={leftDomain}
+              tick={{
+                fill: `rgba(255,255,255,${leftAxisOpacity})`,
+                fontSize: "var(--body-size)",
+              }}
+              axisLine={{
+                stroke: `rgba(255,255,255,${leftAxisOpacity})`,
+                strokeWidth: 1,
+              }}
+              tickLine={{ stroke: `rgba(255,255,255,${leftAxisOpacity})` }}
+              tickFormatter={leftTickFormatter}
+              label={{
+                value: leftAxisLabel,
+                fontSize: "var(--body-size)",
+                angle: -90,
+                position: "center",
+                fill: `rgba(255,255,255,${leftAxisOpacity})`,
+                dx: -38,
+              }}
+            />
+
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              domain={rightDomain}
+              tick={{
+                fill: `rgba(255,255,255,${rightAxisOpacity})`,
+                fontSize: "var(--body-size)",
+              }}
+              axisLine={{
+                stroke: `rgba(255,255,255,${rightAxisOpacity})`,
+                strokeWidth: 1,
+              }}
+              tickLine={{ stroke: `rgba(255,255,255,${rightAxisOpacity})` }}
+              tickFormatter={rightTickFormatter}
+              label={{
+                value: rightAxisLabel,
+                fontSize: "var(--body-size)",
+                angle: 90,
+                position: "center",
+                fill: `rgba(255,255,255,${rightAxisOpacity})`,
+                dx: 38,
+              }}
+            />
+
+            <Legend formatter={legendFormatter} wrapperStyle={{ paddingTop: 8 }} />
+
+            {/* LEFT SERIES */}
+            <Area
+              yAxisId="left"
+              type="monotone"
+              dataKey={leftDataKey}
+              name={leftName}
+              stroke="none"
+              fill={leftColor}
+              fillOpacity={0.35 * leftOpacity}
+              activeDot={false}
+              isAnimationActive={false}
+              legendType="none"
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey={leftDataKey}
+              stroke="white"
+              strokeOpacity={leftOpacity}
+              strokeWidth={5}
+              dot={false}
+              activeDot={false}
+              style={{ pointerEvents: "none" }}
+              isAnimationActive={false}
+              legendType="none"
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey={leftDataKey}
+              name={leftName}
+              stroke={leftColor}
+              strokeOpacity={leftOpacity}
+              strokeWidth={3}
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+            />
+
+            {/* RIGHT SERIES */}
+            <Area
+              yAxisId="right"
+              type="monotone"
+              dataKey={rightDataKey}
+              name={rightName}
+              stroke="none"
+              fill={rightColor}
+              fillOpacity={0.5 * rightOpacity}
+              activeDot={false}
+              isAnimationActive={false}
+              legendType="none"
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey={rightDataKey}
+              stroke="white"
+              strokeOpacity={rightOpacity}
+              strokeWidth={5}
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+              legendType="none"
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey={rightDataKey}
+              name={rightName}
+              stroke={rightColor}
+              strokeOpacity={rightOpacity}
+              strokeWidth={2.5}
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+            />
+
+            {referenceX != null && (
+              <ReferenceLine
+                yAxisId="right"
+                x={referenceX}
+                stroke="rgba(255,255,255,0.3)"
+                strokeOpacity={rightOpacity}
+                strokeDasharray="4 4"
+              />
+            )}
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
 
       <div
         style={{

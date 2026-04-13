@@ -11,7 +11,13 @@ export default function Scale() {
           systems in the world.
         </Typography>
 
-        <Typography sx={{ fontSize: "var(--source-size)", opacity:"60%"}}>
+        <Typography
+          variant="caption"
+          sx={{
+            fontSize: "var(--source-size)",
+            opacity: 0.6,
+          }}
+        >
           GIS data source: 2024 Statewide Crop Mapping from{" "}
           <Link
             href="https://data.cnra.ca.gov/dataset/statewide-crop-mapping"
@@ -20,12 +26,12 @@ export default function Scale() {
             sx={{
               color: "inherit",
               opacity: 0.6,
-              textDecoration: "underline",            
+              textDecoration: "underline",
               textDecorationColor: "rgba(255,255,255,0.7)",
               "&:hover": {
                 color: "inherit",
                 opacity: 1,
-                textDecoration: "underline",          // 👈 keep underline on hover
+                textDecoration: "underline",
                 textDecorationColor: "currentColor",
               },
               "&:visited": {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { Typography } from "@mui/material";
 import * as d3 from "d3";
 
@@ -45,6 +45,25 @@ export default function SurfaceGroundwaterChart({
   const [swDomain, setSwDomain] = useState<[number, number]>([0, 0]);
   const [gwDomain, setGwDomain] = useState<[number, number]>([0, 0]);
   const [viewMode, setViewMode] = useState<ViewMode>("both");
+
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = useCallback(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const totalScroll = rect.height - window.innerHeight;
+    if (totalScroll <= 0) return;
+    const raw = -rect.top / totalScroll;
+    setScrollProgress(Math.max(0, Math.min(1, raw)));
+  }, []);
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   useEffect(() => {
     let cancelled = false;
@@ -151,54 +170,70 @@ export default function SurfaceGroundwaterChart({
 
   return (
     <div
-      style={{
-        margin: "var(--overlay-margin)",
-      }}
+      ref={outerRef}
+      style={{ height: "250vh", position: "relative" }}
     >
-      <div style={{ width: "var(--overlay-width)" }}>
-        <Typography component="h3" variant="h3" gutterBottom>
-          What Happens During a California Drought
-        </Typography>
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            margin: "var(--overlay-margin)",
+          }}
+        >
+          <div style={{ width: "var(--overlay-width)" }}>
+            <Typography component="h3" variant="h3" gutterBottom>
+              What Happens During a California Drought
+            </Typography>
 
-        <Typography component="p" variant="body1" gutterBottom>
-          During drought periods, California‘s water system experiences significant
-          stress.
-        </Typography>
+            <Typography component="p" variant="body1" gutterBottom>
+              During drought periods, California’s water system experiences significant
+              stress.
+            </Typography>
 
-        <Typography component="p" variant="body1" gutterBottom>
-          As drought reduces rainfall and snowpack, the runoff water in rivers and
-          reservoirs begins to decline.
-        </Typography>
+            <Typography component="p" variant="body1" gutterBottom>
+              As drought reduces rainfall and snowpack, the runoff water in rivers and
+              reservoirs begins to decline.
+            </Typography>
 
-        <Typography component="p" variant="body1" sx={{mb: "var(--space-text-chart)"}} >
-          At the same time, precipitation patterns are becoming increasingly volatile
-          and unpredictable, with rainfall arriving less consistently and often in
-          shorter, more intense bursts.
-        </Typography>
-      </div>
+            <Typography component="p" variant="body1" sx={{mb: "var(--space-text-chart)"}} >
+              At the same time, precipitation patterns are becoming increasingly volatile
+              and unpredictable, with rainfall arriving less consistently and often in
+              shorter, more intense bursts.
+            </Typography>
+          </div>
 
-      <div style={{ width: "var(--chart-width)" }}>
-        <DualAxisAreaChart
-          data={chartData}
-          height={height}
-          width="100%"
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          leftName="Surface Water"
-          rightName="Groundwater"
-          leftColor={COLOR_SW}
-          rightColor={COLOR_GW}
-          leftDomain={swDomain}
-          rightDomain={gwDomain}
-          leftAxisLabel="Surface Water (TAF)"
-          rightAxisLabel="Groundwater (TAF)"
-          referenceX={2002}
-          leftTickFormatter={formatTAF}
-          rightTickFormatter={formatTAF}
-          swDuration={1800}
-          gwDelay={1400}
-          gwDuration={1800}
-        />
+          <div style={{ width: "var(--chart-width)" }}>
+            <DualAxisAreaChart
+              data={chartData}
+              height={height}
+              width="100%"
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              leftName="Surface Water"
+              rightName="Groundwater"
+              leftColor={COLOR_SW}
+              rightColor={COLOR_GW}
+              leftDomain={swDomain}
+              rightDomain={gwDomain}
+              leftAxisLabel="Surface Water (TAF)"
+              rightAxisLabel="Groundwater (TAF)"
+              referenceX={2002}
+              leftTickFormatter={formatTAF}
+              rightTickFormatter={formatTAF}
+              scrollProgress={scrollProgress}
+              swDuration={1800}
+              gwDelay={1400}
+              gwDuration={1800}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

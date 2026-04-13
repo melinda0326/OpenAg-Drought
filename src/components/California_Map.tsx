@@ -4,144 +4,6 @@ import type { MapRef } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-/* ── Responsive connecting line between a map point and a DOM element ── */
-// function ConnectingLine({
-//   mapRef,
-//   lngLat,
-//   targetId,
-// }: {
-//   mapRef: React.RefObject<MapRef | null>;
-//   lngLat: [number, number];
-//   targetId: string;
-// }) {
-//   const [coords, setCoords] = useState<{
-//     x1: number;
-//     y1: number;
-//     x2: number;
-//     y2: number;
-//     opacity: number;
-//   } | null>(null);
-
-//   const update = useCallback(() => {
-//     const map = mapRef.current?.getMap();
-//     const target = document.getElementById(targetId);
-//     if (!map || !target) {
-//       setCoords(null);
-//       return;
-//     }
-
-//     const projected = map.project(lngLat);
-//     const rect = target.getBoundingClientRect();
-
-//     const viewportH = window.innerHeight;
-//     const viewportW = window.innerWidth;
-
-//     // how much of target is vertically visible
-//     const visibleTop = Math.max(rect.top, 0);
-//     const visibleBottom = Math.min(rect.bottom, viewportH);
-//     const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-//     const visibilityRatio = rect.height > 0 ? visibleHeight / rect.height : 0;
-
-//     // hide line if target is basically off screen
-//     if (
-//       rect.right < 0 ||
-//       rect.left > viewportW ||
-//       rect.bottom < 0 ||
-//       rect.top > viewportH ||
-//       visibilityRatio <= 0.08
-//     ) {
-//       setCoords(null);
-//       return;
-//     }
-
-//     // fade line as target leaves viewport
-//     const opacity = Math.max(0, Math.min(1, visibilityRatio));
-//     setCoords({
-//       x1: projected.x,
-//       y1: projected.y,
-//       x2: rect.left,
-//       y2: rect.top + rect.height / 2,
-//       opacity,
-//     });
-//   }, [mapRef, lngLat, targetId]);
-
-//   useEffect(() => {
-//     const map = mapRef.current?.getMap();
-//     if (!map) return;
-
-//     // Update on every frame the map moves, and on scroll/resize
-//     map.on("move", update);
-//     window.addEventListener("scroll", update, true);
-//     window.addEventListener("resize", update);
-
-//     // Initial position
-//     update();
-//     // Also run on next frame to catch layout settling
-//     const raf = requestAnimationFrame(update);
-
-//     return () => {
-//       map.off("move", update);
-//       window.removeEventListener("scroll", update, true);
-//       window.removeEventListener("resize", update);
-//       cancelAnimationFrame(raf);
-//     };
-//   }, [mapRef, update]);
-
-//   // Also update on any scroll (content scrolls over fixed map)
-//   useEffect(() => {
-//     let ticking = false;
-//     const onScroll = () => {
-//       if (!ticking) {
-//         ticking = true;
-//         requestAnimationFrame(() => {
-//           update();
-//           ticking = false;
-//         });
-//       }
-//     };
-//     window.addEventListener("scroll", onScroll, true);
-//     return () => window.removeEventListener("scroll", onScroll, true);
-//   }, [update]);
-
-//   if (!coords) return null;
-
-//   return (
-//     <svg
-//       style={{
-//         position: "fixed",
-//         inset: 0,
-//         width: "100vw",
-//         height: "100vh",
-//         pointerEvents: "none",
-//         zIndex: 5,
-//       }}
-//     >
-//       <line
-//         x1={coords.x1}
-//         y1={coords.y1}
-//         x2={coords.x2}
-//         y2={coords.y2}
-//         stroke="white"
-//         strokeWidth="2"
-//         strokeDasharray="6 4"
-//         opacity={0.75 * coords.opacity}
-//       />
-//       <circle
-//         cx={coords.x1}
-//         cy={coords.y1}
-//         r="4"
-//         fill="white"
-//         opacity={0.9 * coords.opacity}
-//       />
-//     </svg>
-//   );
-// }
-
-// const CA_BOUNDS: [[number, number], [number, number]] = [
-//   [-140.48, 32.53],
-//   [-114.13, 42.01],
-// ];
-
 function ConnectingLine({
   mapRef,
   lngLat,
@@ -293,6 +155,13 @@ const CA_BOUNDS : [[number, number], [number, number]] = [
   [-115, 41],
 ];
 
+const ZOOMED_MAP_VIEW = {
+  longitude: -124.665,
+  latitude: 37.033,
+  zoom: 6.92,
+};
+
+
 type StepId =
   | "opener"
   | "state-crop"
@@ -346,7 +215,7 @@ export default function CaliforniaMap({
   const mapRef = useRef<MapRef | null>(null);
   const token = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
   const [hoveredCropCode, setHoveredCropCode] = useState<string | null>(null);
-
+  const isOpenExploration = activeSection === "open-exploration";
   const isCentralValleyCropStep = activeSection === "state-crop-cv" || activeSection === "state-crop-rv" || activeSection === "state-crop-emp" ;
 
   // Reset hover state when leaving crop steps
@@ -356,54 +225,70 @@ export default function CaliforniaMap({
   const isReducedCropStep = activeSection === "state-crop-rv" || activeSection === "state-crop-emp";
   const isCompareLand = activeSection === "compare-land";
   const isCompareRev = activeSection === "compare-rev";
-  const cameraMode = isCompareLand ? "colusa" : isReducedCropStep ? "cv-rv" : isCentralValleyCropStep ? "cv" : "state";
+  const cameraMode = isCompareLand
+  ? "colusa"
+  : isReducedCropStep
+    ? "cv-rv"
+    : isCentralValleyCropStep
+      ? "cv"
+      : isOpenExploration
+        ? "state"
+        : "zoomed-state";
 
   useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
+  const map = mapRef.current?.getMap();
+  if (!map) return;
 
-    if (cameraMode === "colusa") {
-      map.flyTo({
-        center: [-122.295, 39.193],
-        zoom: 9,
-        bearing: 0,
-        pitch: 0,
-        duration: 2500,
-        padding: {
-          left: Math.round(window.innerWidth * 0.4),
-          right: 0,
-          top: 0,
-          bottom: 0,
-        }
-      });
-    } else if (cameraMode === "cv") {
-      map.flyTo({
-        center: [-120, 36.5],
-        zoom: 9,
-        bearing: 0,
-        pitch: 0,
-        duration: 2500,
-      });
-    } else if (cameraMode === "cv-rv") {
-      map.flyTo({
-        center: [-122.116, 38.465],
-        zoom: 9,
-        bearing: 0,
-        pitch: 0,
-        duration: 2500,
-      });
-    } else {
-      map.fitBounds(CA_BOUNDS, {
-        padding: {
+  if (cameraMode === "colusa") {
+    map.flyTo({
+      center: [-122.295, 39.193],
+      zoom: 9,
+      bearing: 0,
+      pitch: 0,
+      duration: 2500,
+      padding: {
+        left: Math.round(window.innerWidth * 0.4),
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
+    });
+  } else if (cameraMode === "cv") {
+    map.flyTo({
+      center: [-120, 36.5],
+      zoom: 9,
+      bearing: 0,
+      pitch: 0,
+      duration: 2500,
+    });
+  } else if (cameraMode === "cv-rv") {
+    map.flyTo({
+      center: [-122.116, 38.465],
+      zoom: 9,
+      bearing: 0,
+      pitch: 0,
+      duration: 2500,
+    });
+  } else if (cameraMode === "state") {
+    map.fitBounds(CA_BOUNDS, {
+      padding: {
         left: 300,
         right: 50,
-        top: 30,     // ↓ reduce these
-        bottom: 30,  // ↓ reduce these
+        top: 30,
+        bottom: 30,
       },
-        duration: 1800,
-      });
-    }
-  }, [cameraMode]);
+      duration: 1800,
+    });
+  } else {
+    map.flyTo({
+      center: [ZOOMED_MAP_VIEW.longitude, ZOOMED_MAP_VIEW.latitude],
+      zoom: ZOOMED_MAP_VIEW.zoom,
+      bearing: 0,
+      pitch: 0,
+      duration: 1800,
+    });
+  }
+}, [cameraMode]);
 
   if (!token) {
     return (
@@ -430,7 +315,11 @@ export default function CaliforniaMap({
     <Map
       ref={mapRef}
       mapboxAccessToken={token}
-      initialViewState={{ bounds: CA_BOUNDS, fitBoundsOptions: { padding: 120 },}}
+      initialViewState={{
+        longitude: ZOOMED_MAP_VIEW.longitude,
+        latitude: ZOOMED_MAP_VIEW.latitude,
+        zoom: ZOOMED_MAP_VIEW.zoom,
+      }}
       mapStyle="mapbox://styles/mapbox/satellite-v9"
       style={{ width: "100%", height: "100%" }}
       onLoad={onLoad}
@@ -442,14 +331,16 @@ export default function CaliforniaMap({
       keyboard={false}
       boxZoom={false}
     >
-      {activeSection === "opener" && (
-        <Marker longitude={-120.3} latitude={37.1} anchor="bottom">
+      <Marker longitude={-120.3} latitude={37.1} anchor="bottom">
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               pointerEvents: "none",
+              opacity: activeSection === "opener" ? 1 : 0,
+              transform: activeSection === "opener" ? "scale(1) translateY(0)" : "scale(0.85) translateY(20px)",
+              transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
             }}
           >
             <div
@@ -473,39 +364,6 @@ export default function CaliforniaMap({
                 }}
               />
             </div>
-
-            {/* <div
-              style={{
-                marginTop: 10,
-                color: "white",
-                fontSize: 14,
-                fontWeight: 600,
-                textShadow: "0 2px 8px rgba(0,0,0,0.8)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Drought Land in Central Valley
-            </div> */}
-
-            {/* <div
-              style={{
-                marginTop: 20,
-                color: "white",
-                fontSize: "var(--body-size)",
-                fontWeight: 600,
-                whiteSpace: "nowrap",
-                display: "inline-block",
-                padding: "6px 10px",
-                background: "rgba(0, 0, 0, 0.55)",
-                borderRadius: "8px",
-                boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
-                backdropFilter: "blur(4px)",
-                WebkitBackdropFilter: "blur(4px)",
-              }}
-            >
-              Drought Land in Central Valley
-            </div> */}
-
         <div
           style={{
             marginTop: 20,
@@ -525,7 +383,6 @@ export default function CaliforniaMap({
         </div>
           </div>
         </Marker>
-      )}
 
       {activeSection === "open-exploration" && geojsonWithValue && (
         <Source id="counties" type="geojson" data={geojsonWithValue}>
@@ -970,7 +827,7 @@ export default function CaliforniaMap({
           display: "flex",
           flexDirection: "column",
           gap: 6,
-          zIndex: 1000,
+          zIndex: 9999,
           pointerEvents: "auto",
         }}
       >
@@ -979,11 +836,18 @@ export default function CaliforniaMap({
             color: "white",
             fontSize: "var(--body-size)",
             fontWeight: 700,
-            fontFamily: "Inter, system-ui, sans-serif",
-            marginBottom: 2,
+            // marginBottom: 2,
           }}
         >
           Crop Type
+        </span>
+        <span
+          style={{
+            color: "white",
+            fontSize: "var(--body-size)",
+          }}
+        >
+          Hover over the legend to highlight a specific crop
         </span>
 
         {(isReducedCropStep
@@ -996,25 +860,14 @@ export default function CaliforniaMap({
           return (
             <div
               key={code}
-              // onMouseEnter={() => setHoveredCropCode(code)}
-              // onMouseLeave={() => setHoveredCropCode(null)}
-              onMouseEnter={() => {
-                console.log("hover enter:", code);
-                setHoveredCropCode(code);
-              }}
-              onMouseLeave={() => {
-                console.log("hover leave");
-                setHoveredCropCode(null);
-              }}
-              onClick={() => {
-                console.log("clicked:", code);
-                setHoveredCropCode(code);
-              }}
+              onMouseEnter={() => setHoveredCropCode(code)}
+              onMouseLeave={() => setHoveredCropCode(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
                 cursor: "pointer",
+                pointerEvents: "auto",
                 opacity: hoveredCropCode === null ? 1 : isActive ? 1 : 0.4,
                 transition: "opacity 0.2s ease, background 0.2s ease",
                 padding: "4px 6px",

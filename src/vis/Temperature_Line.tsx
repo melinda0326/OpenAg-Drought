@@ -15,42 +15,30 @@ type Props = {
   csvUrl?: string;
   height?: number;
   title?: string;
+  scrollProgress?: number;
 };
 
 export default function TemperatureLineChart({
   csvUrl = "/data/temp_data.csv",
   height = 350,
   title = "Annual Average Temperature Trend",
+  scrollProgress = 0,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [containerW, setContainerW] = useState(900);
-  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
     const ro = new ResizeObserver((entries) => {
       const w = entries[0]?.contentRect?.width;
       if (w) setContainerW(w);
     });
+
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.4 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -170,21 +158,10 @@ export default function TemperatureLineChart({
 
       const totalLength = (linePath.node() as SVGPathElement).getTotalLength();
 
-      if (isInView) {
-        linePath
-          .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
-          .attr("stroke-dashoffset", totalLength)
-          .transition()
-          .duration(5000)
-          .ease(d3.easeLinear)
-          .attr("stroke-dashoffset", 0);
-      } else {
-        linePath
-          .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
-          .attr("stroke-dashoffset", totalLength);
-      }
+      linePath
+        .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+        .attr("stroke-dashoffset", totalLength * (1 - scrollProgress));
 
-      // Chart title
       root.append("text")
         .attr("x", width / 2)
         .attr("y", 18)
@@ -214,7 +191,7 @@ export default function TemperatureLineChart({
     };
 
     draw();
-  }, [csvUrl, containerW, height, isInView, title]);
+  }, [csvUrl, containerW, height, scrollProgress, title]);
 
   return (
     <div ref={containerRef} style={{ width: "100%", height }}>
