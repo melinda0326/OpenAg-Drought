@@ -223,7 +223,7 @@ export default function StackedAreaChart<T>({
           .attr("y", -8)
           .attr("fill", "white")
           .attr("text-anchor", "middle")
-          .style("font-size", "12px")
+          .style("font-size", "var(--body-size)")
           .style("font-style", "italic")
           .style("font-family", "Inter, system-ui, sans-serif")
           .text(ref.label);

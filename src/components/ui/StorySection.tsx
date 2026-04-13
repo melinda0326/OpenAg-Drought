@@ -16,8 +16,9 @@ export default function StorySection({ children, sx }: StorySectionProps) {
         justifyContent: "flex-start",
         px: "var(--overlay-margin)",
         position: "relative",
-        zIndex: 2,
+        // zIndex: 2,
         color: "#f5f5f5",
+        // lineHeight: "1.5rem",
         // pointerEvents: "none",
         ...sx,
       }}

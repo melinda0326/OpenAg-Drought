@@ -103,7 +103,7 @@ export default function DroughtCumulativeAreaChart({
 
   return (
     <div style={{ margin: "var(--overlay-margin)",  }}>
-      <h2
+      {/* <h2
         style={{
           color: "white",
           fontSize: "var(--title-size)",
@@ -113,20 +113,33 @@ export default function DroughtCumulativeAreaChart({
         }}
       >
         Why California Faces Drought
-      </h2>
-      <p
-        style={{
+      </h2> */}
+      <Typography component="h2" variant="h2"
+        sx={{
+          color: "white",
+          fontWeight: 700,
+          lineHeight: 1.2,
+        }}
+        gutterBottom
+      >
+        Why California Faces Drought
+      </Typography>
+      <Typography
+        component="p"
+        variant="body1"
+        sx={{
           maxWidth: "var(--overlay-width)",
           color: "#fff",
           fontSize: "var(--body-size)",
         }}
+        gutterBottom
       >
         Drought has always been part of California's natural climate. However,
         climate change is acting as a powerful amplifier, intensifying the
         severity of these dry periods.
-      </p>
+      </Typography>
 
-      <Typography sx={{fontSize: "1rem", opacity:"60%", mt: "--space-sm", color: "#fff", marginBottom: "5rem",}}>
+      <Typography sx={{fontSize: "var(--source-size)", opacity:"60%", mt: "--space-sm", color: "#fff", marginBottom: "5rem",}}>
           Drought Index data source from{" "}
           <Link
             href="https://droughtmonitor.unl.edu/DmData/TimeSeries.aspx"

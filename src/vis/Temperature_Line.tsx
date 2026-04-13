@@ -190,7 +190,7 @@ export default function TemperatureLineChart({
         .attr("y", 18)
         .attr("text-anchor", "middle")
         .attr("fill", "white")
-        .style("font-size", "1.1rem")
+        .style("font-size", "var(--body-size)")
         .style("font-weight", "600")
         .style("font-family", "Inter, system-ui, sans-serif")
         .text(title);

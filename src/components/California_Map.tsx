@@ -345,8 +345,14 @@ export default function CaliforniaMap({
   console.log("activeSection:", activeSection);
   const mapRef = useRef<MapRef | null>(null);
   const token = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
+  const [hoveredCropCode, setHoveredCropCode] = useState<string | null>(null);
 
   const isCentralValleyCropStep = activeSection === "state-crop-cv" || activeSection === "state-crop-rv" || activeSection === "state-crop-emp" ;
+
+  // Reset hover state when leaving crop steps
+  useEffect(() => {
+    if (!isCentralValleyCropStep) setHoveredCropCode(null);
+  }, [isCentralValleyCropStep]);
   const isReducedCropStep = activeSection === "state-crop-rv" || activeSection === "state-crop-emp";
   const isCompareLand = activeSection === "compare-land";
   const isCompareRev = activeSection === "compare-rev";
@@ -582,97 +588,92 @@ export default function CaliforniaMap({
         </Source>
       )}
 
-      {activeSection == "state-crop" && (
-        <Source
-          id="shp-source"
-          type="vector"
-          url="mapbox://melinda0326.axihr243"
-        >
-          <Layer
-            id="shp-fill"
-            type="fill"
-            source-layer="fixed"
-            paint={{
-              "fill-color": "#2f7d44",
-              "fill-outline-color": "transparent",
-              "fill-antialias": true,
-            }}
-          />
-          <Layer
-            id="shp-outline"
-            type="line"
-            source-layer="fixed"
-            paint={{
-              "line-color": "#358E4D",
-              "line-width": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                5,
-                0.6,
-                9,
-                1.2,
-                12,
-                2.0,
-              ],
-              "line-opacity": 1,
-            }}
-          />
-        </Source>
-      )}
+      {/* Always render sources so tiles preload — control visibility via opacity */}
+      <Source
+        id="shp-source"
+        type="vector"
+        url="mapbox://melinda0326.axihr243"
+      >
+        <Layer
+          id="shp-fill"
+          type="fill"
+          source-layer="fixed"
+          paint={{
+            "fill-color": "#2f7d44",
+            "fill-opacity": activeSection === "state-crop" ? 1 : 0,
+            "fill-outline-color": "transparent",
+            "fill-antialias": true,
+          }}
+        />
+        <Layer
+          id="shp-outline"
+          type="line"
+          source-layer="fixed"
+          paint={{
+            "line-color": "#358E4D",
+            "line-width": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              5,
+              0.6,
+              9,
+              1.2,
+              12,
+              2.0,
+            ],
+            "line-opacity": activeSection === "state-crop" ? 1 : 0,
+          }}
+        />
+      </Source>
 
-      {isCentralValleyCropStep && (
-        <Source
-          id="cv-source"
-          type="vector"
-          url="mapbox://melinda0326.9sh816s7"
-        >
-          <Layer
-            id="cv-fill"
-            type="fill"
-            source-layer="state_crop-arjis8"
-            paint={{
-              "fill-color": isReducedCropStep
+      <Source
+        id="cv-source"
+        type="vector"
+        url="mapbox://melinda0326.9sh816s7"
+      >
+        <Layer
+          id="cv-fill"
+          type="fill"
+          source-layer="state_crop-arjis8"
+          paint={{
+            "fill-color": isReducedCropStep
+              ? [
+                  "match",
+                  ["get", "SYMB_CLASS"],
+                  "T", "#db3923",
+                  "V", "#6F4E7C",
+                  "rgba(80,80,80,0.3)",
+                ]
+              : [
+                  "match",
+                  ["get", "SYMB_CLASS"],
+                  "G", "#C2A83E",
+                  "R", "#6FAED9",
+                  "F", "#6DA34D",
+                  "P", "#A3B18A",
+                  "T", "#db3923",
+                  "D", "#f7c46a",
+                  "C", "#d17819",
+                  "V", "#6F4E7C",
+                  "YP", "#D4A373",
+                  "#D9D9D9",
+                ],
+            "fill-opacity": isCentralValleyCropStep
+              ? hoveredCropCode
                 ? [
-                    "match",
-                    ["get", "SYMB_CLASS"],
-                    "T", "#db3923",
-                    "V", "#6F4E7C",
-                    "rgba(80,80,80,0.3)",
+                    "case",
+                    ["==", ["get", "SYMB_CLASS"], hoveredCropCode],
+                    0.88,
+                    0.15,
                   ]
-                : [
-                    // "match",
-                    // ["get", "SYMB_CLASS"],
-                    // "G", "#E9C46A",
-                    // "R", "#4EA8DE",
-                    // "F", "#52B788",
-                    // "P", "#ADB5BD",
-                    // "T", "#F4A261",
-                    // "D", "#C77DFF",
-                    // "C", "#FFD166",
-                    // "V", "#6D597A",
-                    // "YP", "#2A9D8F",
-                    // "#D9D9D9",
-                    "match",
-                    ["get", "SYMB_CLASS"],
-                    "G", "#C2A83E",
-                    "R", "#6FAED9",
-                    "F", "#6DA34D",
-                    "P", "#A3B18A",
-                    "T", "#db3923",
-                    "D", "#f7c46a",
-                    "C", "#d17819",
-                    "V", "#6F4E7C",
-                    "YP", "#D4A373",
-                    "#D9D9D9",
-                  ],
-              "fill-opacity": 0.88,
-              "fill-outline-color": "transparent",
-              "fill-antialias": true,
-            }}
-          />
-        </Source>
-      )}
+                : 0.88
+              : 0,
+            "fill-outline-color": "transparent",
+            "fill-antialias": true,
+          }}
+        />
+      </Source>
 
       {isCompareLand && (
         <>
@@ -969,14 +970,14 @@ export default function CaliforniaMap({
           display: "flex",
           flexDirection: "column",
           gap: 6,
-          zIndex: 10,
+          zIndex: 1000,
           pointerEvents: "auto",
         }}
       >
         <span
           style={{
             color: "white",
-            fontSize: 13,
+            fontSize: "var(--body-size)",
             fontWeight: 700,
             fontFamily: "Inter, system-ui, sans-serif",
             marginBottom: 2,
@@ -984,34 +985,67 @@ export default function CaliforniaMap({
         >
           Crop Type
         </span>
+
         {(isReducedCropStep
           ? CROP_LEGEND.filter(({ code }) => code === "T" || code === "V")
           : CROP_LEGEND
-        ).map(({ code, color, label }) => (
-          <div
-            key={code}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
-          >
+        ).map(({ code, color, label }) => {
+          const isActive = hoveredCropCode === code;
+          const isDimmed = hoveredCropCode !== null && hoveredCropCode !== code;
+
+          return (
             <div
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 3,
-                backgroundColor: color,
-                flexShrink: 0,
+              key={code}
+              // onMouseEnter={() => setHoveredCropCode(code)}
+              // onMouseLeave={() => setHoveredCropCode(null)}
+              onMouseEnter={() => {
+                console.log("hover enter:", code);
+                setHoveredCropCode(code);
               }}
-            />
-            <span
+              onMouseLeave={() => {
+                console.log("hover leave");
+                setHoveredCropCode(null);
+              }}
+              onClick={() => {
+                console.log("clicked:", code);
+                setHoveredCropCode(code);
+              }}
               style={{
-                color: "white",
-                fontSize: 12,
-                fontFamily: "Inter, system-ui, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                opacity: hoveredCropCode === null ? 1 : isActive ? 1 : 0.4,
+                transition: "opacity 0.2s ease, background 0.2s ease",
+                padding: "4px 6px",
+                borderRadius: 6,
+                background: isActive ? "rgba(255,255,255,0.1)" : "transparent",
               }}
             >
-              {label}
-            </span>
-          </div>
-        ))}
+              <div
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: 3,
+                  backgroundColor: color,
+                  flexShrink: 0,
+                  boxShadow: isActive ? `0 0 8px ${color}` : "none",
+                  transition: "box-shadow 0.2s ease, opacity 0.2s ease",
+                }}
+              />
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "var(--body-size)",
+                  fontFamily: "Inter, system-ui, sans-serif",
+                  fontWeight: isActive ? 600 : 400,
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          );
+        })}
       </div>
     )}
     </div>

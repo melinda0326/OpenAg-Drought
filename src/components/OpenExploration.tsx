@@ -236,64 +236,6 @@ export default function OpenExploration({
   WebkitBackdropFilter: "blur(12px)",
   color: "#f8fafc",
 };
-
-  // return (
-  //   <div
-  //     style={{
-  //       minHeight: "100vh",
-  //       width: "100%",
-  //       display: "flex",
-  //       alignItems: "center",
-  //       justifyContent: "flex-start",
-  //       padding: "0 var(--overlay-margin)",
-  //       position: "relative",
-  //       zIndex: 2,
-  //       pointerEvents: "none",
-  //       boxSizing: "border-box",
-  //     }}
-  //   >
-  //     <style>{openExplorationSliderCss}</style>
-
-  //     <div
-  //       style={{
-  //         position: "relative",
-  //         zIndex: 2,
-  //         width: "var(--overlay-width)",
-  //         display: "flex",
-  //         flexDirection: "column",
-  //         gap: 10,
-  //         pointerEvents: "auto",
-  //       }}
-  //     >
-  //       <div style={{ ...boxSkin, width: "100%" }}>
-  //         <OpenExplorationPanel
-  //           metric={metric}
-  //           setMetric={setMetric}
-  //           shortagePct={Math.round(shortage * 100)}
-  //           setShortagePct={(v: number) => setShortage(v / 100)}
-  //           selectedCounties={selectedCounties}
-  //           setSelectedCounties={setSelectedCounties}
-  //           countyOptions={allCountyOptions}
-  //           loading={loading}
-  //           error={error}
-  //         />
-
-  //         {!loading && !error && csvRows && (
-  //           <div style={{ marginTop: 10, borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 10 }}>
-  //             <CentralValleyBaseScenarioBars
-  //               rows={csvRows}
-  //               shortage={shortage}
-  //               metric={metric}
-  //               selectedCounties={selectedCounties}
-  //             />
-  //           </div>
-  //         )}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
-
   return (
   <div
     style={{

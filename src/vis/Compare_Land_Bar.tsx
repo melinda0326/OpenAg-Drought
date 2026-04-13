@@ -112,7 +112,7 @@ export default function OverlayBarChart({
     if (!chartData.length) return;
 
     const width = fixedWidth ?? containerW;
-    const margin = { top: 50, right: 30, bottom: 50, left: 70 };
+    const margin = { top: 50, right: 25, bottom: 50, left: 80 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -155,22 +155,22 @@ export default function OverlayBarChart({
     .attr("dx", "0")
     .attr("dy", "0.8em")
     .style("fill", "white")
-    .style("font-size", "13px");
+    .style("font-size", "var(--body-size)");
 
     gx.selectAll("path,line").style("stroke", "white");
 
     const gy = g.append("g").call(yAxis);
-    gy.selectAll("text").style("fill", "white");
+    gy.selectAll("text").style("fill", "white").style("font-size", "var(--body-size)");
     gy.selectAll("path,line").style("stroke", "white");
 
     // y label
     g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -innerHeight / 2)
-      .attr("y", -50)
+      .attr("y", -65)
       .attr("text-anchor", "middle")
       .style("fill", "white")
-      .style("font-size", "14px")
+      .style("font-size", "var(--body-size)")
       .text(ylabel);
 
     // title
@@ -178,7 +178,7 @@ export default function OverlayBarChart({
       .attr("x", 0)
       .attr("y", -30)
       .style("fill", "white")
-      .style("font-size", "18px")
+      .style("font-size", "var(--body-size)")
       .style("font-weight", "600")
       .text(title);
 
@@ -205,21 +205,6 @@ export default function OverlayBarChart({
       .attr("width", x.bandwidth())
       .attr("height", (d) => y(d.val2022) - y(d.val2019))
       .attr("fill", colorLoss);
-
-    // // Colusa highlight outline
-    // g.selectAll(".bar-highlight")
-    //   .data(chartData.filter((d) => d.CountyName === "Colusa"))
-    //   .enter()
-    //   .append("rect")
-    //   .attr("class", "bar-highlight")
-    //   .attr("x", (d) => x(d.CountyName)! - 2)
-    //   .attr("y", (d) => y(d.val2019) - 2)
-    //   .attr("width", x.bandwidth() + 4)
-    //   .attr("height", (d) => innerHeight - y(d.val2019) + 4)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "white")
-    //   .attr("stroke-width", 2.5)
-    //   .attr("rx", 3);
 
 // Colusa highlight outline
 g.selectAll(".bar-highlight")
@@ -262,20 +247,20 @@ g.selectAll(".bar-highlight")
         .attr("x", 22)
         .attr("y", 11)
         .style("fill", "white")
-        .style("font-size", "13px")
+        .style("font-size", "var(--body-size)")
         .text(item.label);
     });
-  }, [
-    chartData,
-    fixedWidth,
-    containerW,
-    height,
-    title,
-    ylabel,
-    color2022,
-    colorLoss,
-    moneyAxis,
-  ]);
+    }, [
+      chartData,
+      fixedWidth,
+      containerW,
+      height,
+      title,
+      ylabel,
+      color2022,
+      colorLoss,
+      moneyAxis,
+    ]);
 
   return (
     <div ref={containerRef} style={{ width: "100%" }}>

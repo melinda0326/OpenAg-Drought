@@ -14,7 +14,7 @@ import Scale from "./components/02Scale";
 import Scale_CV from "./components/03Scale_CV";
 import PrecipitationAnomalyChart from "./components/08_Precipitation";
 import Scale_RV from "./components/04Scale_RV";
-import SurfaceGroundwaterChart from "./components/SW_GW";
+import SurfaceGroundwaterChart from "./components/09_SW_GW";
 import Scale_EMP from "./components/05Scale_EMP";
 import Compare_Image from "./components/Compare_Image";
 import Compare_Land from "./components/Compare_Land";
@@ -299,7 +299,7 @@ export default function StoryContainer() {
           position: "relative",
           zIndex: 2,
           width: "100%",
-          pointerEvents: "auto",
+          pointerEvents: "none",
         }}
       >
         {/* <Scrollama

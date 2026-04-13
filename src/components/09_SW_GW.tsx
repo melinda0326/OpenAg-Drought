@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Typography } from "@mui/material";
 import * as d3 from "d3";
 
 import DualAxisAreaChart, {
@@ -154,71 +155,33 @@ export default function SurfaceGroundwaterChart({
         margin: "var(--overlay-margin)",
       }}
     >
-      <h2
-        style={{
-          color: "white",
-          fontSize: "var(--title-size)",
-          fontWeight: 700,
-          margin: "0 0 1.5rem 0",
-          maxWidth: "var(--overlay-width)",
-          lineHeight: 1.2,
-        }}
-      >
-        What Happens During a California Drought
-      </h2>
-      <p
-        style={{
-          color: "white",
-          fontSize: "var(--body-size)",
-          fontFamily: "Inter, system-ui, sans-serif",
-          lineHeight: 1.6,
-          marginBottom: "0.5rem",
-          marginTop: 0,
-          maxWidth: "var(--overlay-width)",
-        }}
-      >
-        During drought periods, California's water system experiences significant stress.
-      </p>
+      <div style={{ width: "var(--overlay-width)" }}>
+        <Typography component="h3" variant="h3" gutterBottom>
+          What Happens During a California Drought
+        </Typography>
 
-      <p
-        style={{
-          color: "white",
-          fontSize: "var(--body-size)",
-          fontFamily: "Inter, system-ui, sans-serif",
-          lineHeight: 1.6,
-          marginBottom: "1.5rem",
-          marginTop: 0,
-          maxWidth: "var(--overlay-width)",
-        }}
-      >
-        As drought reduces rainfall and snowpack, the runoff water in rivers and reservoirs begins to decline.
-      </p>
+        <Typography component="p" variant="body1" gutterBottom>
+          During drought periods, California‘s water system experiences significant
+          stress.
+        </Typography>
 
-      <div
-        style={{
-          width: "100%",
-          background: "transparent",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <p
-          style={{
-            color: "#fff",
-            fontSize: "var(--body-size)",
-            fontFamily: "Inter, system-ui, sans-serif",
-            lineHeight: 1.6,
-            marginBottom: "2rem",
-            maxWidth: "var(--overlay-width)",
-          }}
-        >
-          At the same time, precipitation patterns are becoming increasingly volatile and unpredictable, with rainfall arriving less consistently and often in shorter, more intense bursts.
-        </p>
+        <Typography component="p" variant="body1" gutterBottom>
+          As drought reduces rainfall and snowpack, the runoff water in rivers and
+          reservoirs begins to decline.
+        </Typography>
 
+        <Typography component="p" variant="body1" sx={{mb: "var(--space-text-chart)"}} >
+          At the same time, precipitation patterns are becoming increasingly volatile
+          and unpredictable, with rainfall arriving less consistently and often in
+          shorter, more intense bursts.
+        </Typography>
+      </div>
+
+      <div style={{ width: "var(--chart-width)" }}>
         <DualAxisAreaChart
           data={chartData}
           height={height}
-          width="70%"
+          width="100%"
           viewMode={viewMode}
           setViewMode={setViewMode}
           leftName="Surface Water"
@@ -239,5 +202,5 @@ export default function SurfaceGroundwaterChart({
       </div>
     </div>
   );
-}
+  }
 

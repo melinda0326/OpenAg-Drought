@@ -3,8 +3,9 @@ import TemperatureLineChart from "../vis/Temperature_Line";
 
 export default function TemperatureTrend() {
   return (
-    <div style={{ margin: "var(--overlay-margin)" , }}>
-        <Typography sx={{ fontSize: "var(--body-size)", mb: 2, lineHeight: 1.75, textAlign: "left", maxWidth: "var(--overlay-width)", color: "#f5f5f5" }}>
+    <Box sx={{ m: "var(--overlay-margin)" }}>
+      <Box sx={{ width: "var(--overlay-width)" }}>
+        <Typography component="p" variant="body1" gutterBottom>
           <Box component="span" sx={{ fontWeight: 700 }}>
             Rising temperatures
           </Box>{" "}
@@ -12,7 +13,13 @@ export default function TemperatureTrend() {
           reservoirs, causing water to disappear more quickly than before.
         </Typography>
 
-        <Typography sx={{ fontSize: "1rem", opacity:"60%", color: "#fff", mt: "--space-sm", marginBottom: "5rem", maxWidth: "var(--overlay-width)" }}>
+        <Typography
+          sx={{
+            fontSize: "var(--source-size)",
+            opacity: 0.6,
+            mb: "var(--space-text-chart)",
+          }}
+        >
           California historical temperature data source from{" "}
           <Link
             href="https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/statewide/time-series/4/tavg/3/8/1895-2021?base_prd=true&firstbaseyear=1901&lastbaseyear=2000"
@@ -37,10 +44,11 @@ export default function TemperatureTrend() {
             NOAA
           </Link>
         </Typography>
+      </Box>
 
-        <div style={{ maxWidth: "var(--chart-width)", marginBottom: "10rem"  }}>
-          <TemperatureLineChart />
-        </div>
-    </div>
+      <Box sx={{ width: "var(--chart-width)"}}>
+        <TemperatureLineChart />
+      </Box>
+    </Box>
   );
 }

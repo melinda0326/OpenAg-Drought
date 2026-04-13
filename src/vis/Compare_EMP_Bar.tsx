@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 
 const selectedCounties = [
@@ -20,8 +20,14 @@ const selectedCounties = [
 
 function humanReadableMoney(x: number): string {
   const abs = Math.abs(x);
-  if (abs >= 1_000_000_000) return `${(x / 1_000_000_000).toFixed(1)}B`;
-  if (abs >= 1_000_000) return `${(x / 1_000_000).toFixed(1)}M`;
+
+  const formatCompact = (value: number, suffix: string) => {
+    const rounded = Number(value.toFixed(1));
+    return `${rounded}${suffix}`;
+  };
+
+  if (abs >= 1_000_000_000) return formatCompact(x / 1_000_000_000, "B");
+  if (abs >= 1_000_000) return formatCompact(x / 1_000_000, "M");
   if (abs >= 1_000) return `${Math.round(x / 1_000)}K`;
   return `${Math.round(x)}`;
 }
@@ -78,17 +84,34 @@ type Props = {
 
 export default function OverlayEMPBarChart({
   data,
-  col2019="proportion_xwater",
-  col2022="proportion_xwatersc",
+  col2019 = "proportion_xwater",
+  col2022 = "proportion_xwatersc",
   title = "Water Comparison",
   ylabel = "water",
   color2022 = "#A8DADC",
   colorLoss = "#1D7874",
   moneyAxis = false,
-  width = 1000,
+  width: fixedWidth,
   height = 500,
 }: Props) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const [containerW, setContainerW] = useState(fixedWidth ?? 800);
+
+  useEffect(() => {
+    if (fixedWidth) return;
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setContainerW(w);
+    });
+
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fixedWidth]);
 
   const chartData = useMemo(() => {
     return preprocessData(data, col2019, col2022);
@@ -97,7 +120,8 @@ export default function OverlayEMPBarChart({
   useEffect(() => {
     if (!chartData.length) return;
 
-    const margin = { top: 50, right: 130, bottom: 120, left: 70 };
+    const width = fixedWidth ?? containerW;
+    const margin = { top: 50, right: 25, bottom: 50, left: 80 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -128,46 +152,44 @@ export default function OverlayEMPBarChart({
       .ticks(6)
       .tickFormat((d) => humanReadableMoney(d as number));
 
-    // axes
     const gx = g
       .append("g")
       .attr("transform", `translate(0,${innerHeight})`)
       .call(xAxis);
 
     gx.selectAll("text")
-    .attr("transform", null) // remove rotation
-    .style("text-anchor", "middle")
-    .attr("dx", "0")
-    .attr("dy", "0.8em")
-    .style("fill", "white")
-    .style("font-size", "13px");
+      .attr("transform", null)
+      .style("text-anchor", "middle")
+      .attr("dx", "0")
+      .attr("dy", "0.8em")
+      .style("fill", "white")
+      .style("font-size", "var(--body-size)");
 
     gx.selectAll("path,line").style("stroke", "white");
 
     const gy = g.append("g").call(yAxis);
-    gy.selectAll("text").style("fill", "white");
+    gy.selectAll("text")
+      .style("fill", "white")
+      .style("font-size", "var(--body-size)");
     gy.selectAll("path,line").style("stroke", "white");
 
-    // y label
     g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -innerHeight / 2)
-      .attr("y", -50)
+      .attr("y", -65)
       .attr("text-anchor", "middle")
       .style("fill", "white")
-      .style("font-size", "14px")
+      .style("font-size", "var(--body-size)")
       .text(ylabel);
 
-    // title
     g.append("text")
       .attr("x", 0)
       .attr("y", -30)
       .style("fill", "white")
-      .style("font-size", "18px")
+      .style("font-size", "var(--body-size)")
       .style("font-weight", "600")
       .text(title);
 
-    // bottom bar = 2022
     g.selectAll(".bar-2022")
       .data(chartData)
       .enter()
@@ -179,7 +201,6 @@ export default function OverlayEMPBarChart({
       .attr("height", (d) => innerHeight - y(d.val2022))
       .attr("fill", color2022);
 
-    // top segment = loss from 2019 to 2022
     g.selectAll(".bar-loss")
       .data(chartData)
       .enter()
@@ -191,10 +212,9 @@ export default function OverlayEMPBarChart({
       .attr("height", (d) => y(d.val2022) - y(d.val2019))
       .attr("fill", colorLoss);
 
-    // legend
     const legend = svg
       .append("g")
-      .attr("transform", `translate(${width - margin.right -40},${margin.top-40})`);
+      .attr("transform", `translate(${width - margin.right - 40},${margin.top - 40})`);
 
     const legendItems = [
       { label: "2019", color: colorLoss },
@@ -215,12 +235,13 @@ export default function OverlayEMPBarChart({
         .attr("x", 22)
         .attr("y", 11)
         .style("fill", "white")
-        .style("font-size", "13px")
+        .style("font-size", "var(--body-size)")
         .text(item.label);
     });
   }, [
     chartData,
-    width,
+    fixedWidth,
+    containerW,
     height,
     title,
     ylabel,
@@ -230,8 +251,8 @@ export default function OverlayEMPBarChart({
   ]);
 
   return (
-    <div style={{ background: "none" }}>
-      <svg ref={svgRef} />
+    <div ref={containerRef} style={{ background: "none", width: "100%" }}>
+      <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
     </div>
   );
 }

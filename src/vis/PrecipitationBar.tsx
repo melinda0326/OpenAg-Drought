@@ -44,7 +44,7 @@ export default function PrecipitationBarChart({
     return () => observer.disconnect();
   }, []);
 
-  const margin = { top: 35, right: 20, bottom: 76, left: 72 };
+  const margin = { top: 50, right: 20, bottom: 76, left: 72 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -114,7 +114,7 @@ export default function PrecipitationBarChart({
           width: svgWidth,
           height: "auto",
           display: "block",
-          fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          fontFamily: "font-family, Inter, system-ui, sans-serif",
         }}
       >
       <line
@@ -216,7 +216,7 @@ export default function PrecipitationBarChart({
         x={width / 2}
         y={18}
         fill="white"
-        style={{ fontSize: "1.1rem", fontWeight: "600" }}
+        style={{ fontSize: "var(--body--size)", fontWeight: "600" }}
         textAnchor="middle"
       >
         {title}

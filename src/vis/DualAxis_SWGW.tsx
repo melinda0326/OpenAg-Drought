@@ -90,9 +90,6 @@ export default function DualAxisAreaChart({
   gwDelay = 1800,
   gwDuration = 3000,
 }: Props) {
-  const showLeft = viewMode === "left" || viewMode === "both";
-  const showRight = viewMode === "right" || viewMode === "both";
-
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const wasInView = useRef(false);
@@ -117,7 +114,16 @@ export default function DualAxisAreaChart({
     return () => observer.disconnect();
   }, [animateOnView, animationThreshold]);
 
-  const animate = animateOnView && viewMode === "both";
+  const animate = animateOnView;
+
+  // Keep both series rendered at all times.
+  // Only dim the non-focused one.
+  const leftOpacity = viewMode === "right" ? 0.15 : 1;
+  const rightOpacity = viewMode === "left" ? 0.15 : 1;
+
+  // Keep both axes visible too, but dim the inactive side.
+  const leftAxisOpacity = viewMode === "right" ? 0.28 : 1;
+  const rightAxisOpacity = viewMode === "left" ? 0.28 : 1;
 
   const legendFormatter = (value: string) => (
     <span style={{ color: "white", fontSize: "var(--body-size)" }}>
@@ -154,38 +160,40 @@ export default function DualAxisAreaChart({
           data={data}
           margin={{ top: 10, right: 24, left: 24, bottom: 10 }}
         >
-          {viewMode === "left" && (
-            <CartesianGrid
-              stroke="white"
-              strokeOpacity={0.08}
-              vertical={false}
-            />
-          )}
+          <CartesianGrid
+            stroke="white"
+            strokeOpacity={0.08}
+            vertical={false}
+          />
 
           <XAxis
             dataKey="year"
             tick={{ fill: "white", fontSize: "var(--body-size)" }}
             axisLine={{ stroke: "white", strokeWidth: 1 }}
             tickLine={{ stroke: "white" }}
+            tickMargin={10}
             ticks={data.map((d) => d.year).filter((year) => year % 2 === 0)}
           />
 
           <YAxis
             yAxisId="left"
             domain={leftDomain}
-            tick={{ fill: showLeft ? "white" : "transparent", fontSize: 11 }}
+            tick={{
+              fill: `rgba(255,255,255,${leftAxisOpacity})`,
+              fontSize: "var(--body-size)",
+            }}
             axisLine={{
-              stroke: showLeft ? "white" : "transparent",
+              stroke: `rgba(255,255,255,${leftAxisOpacity})`,
               strokeWidth: 1,
             }}
-            tickLine={{ stroke: showLeft ? "white" : "transparent" }}
+            tickLine={{ stroke: `rgba(255,255,255,${leftAxisOpacity})` }}
             tickFormatter={leftTickFormatter}
             label={{
-              value: showLeft ? leftAxisLabel : "",
+              value: leftAxisLabel,
               fontSize: "var(--body-size)",
               angle: -90,
               position: "center",
-              fill: "white",
+              fill: `rgba(255,255,255,${leftAxisOpacity})`,
               dx: -38,
             }}
           />
@@ -194,25 +202,29 @@ export default function DualAxisAreaChart({
             yAxisId="right"
             orientation="right"
             domain={rightDomain}
-            tick={{ fill: showRight ? "white" : "transparent", fontSize: 11 }}
+            tick={{
+              fill: `rgba(255,255,255,${rightAxisOpacity})`,
+              fontSize: "var(--body-size)",
+            }}
             axisLine={{
-              stroke: showRight ? "white" : "transparent",
+              stroke: `rgba(255,255,255,${rightAxisOpacity})`,
               strokeWidth: 1,
             }}
-            tickLine={{ stroke: showRight ? "white" : "transparent" }}
+            tickLine={{ stroke: `rgba(255,255,255,${rightAxisOpacity})` }}
             tickFormatter={rightTickFormatter}
             label={{
-              value: showRight ? rightAxisLabel : "",
+              value: rightAxisLabel,
               fontSize: "var(--body-size)",
               angle: 90,
               position: "center",
-              fill: "white",
+              fill: `rgba(255,255,255,${rightAxisOpacity})`,
               dx: 38,
             }}
           />
 
           <Legend formatter={legendFormatter} wrapperStyle={{ paddingTop: 8 }} />
 
+          {/* LEFT SERIES */}
           <Area
             yAxisId="left"
             type="monotone"
@@ -220,7 +232,7 @@ export default function DualAxisAreaChart({
             name={leftName}
             stroke="none"
             fill={leftColor}
-            fillOpacity={showLeft ? 0.35 : 0}
+            fillOpacity={0.35 * leftOpacity}
             activeDot={false}
             isAnimationActive={animate}
             animationBegin={0}
@@ -232,7 +244,8 @@ export default function DualAxisAreaChart({
             yAxisId="left"
             type="monotone"
             dataKey={leftDataKey}
-            stroke={showLeft ? "white" : "transparent"}
+            stroke="white"
+            strokeOpacity={leftOpacity}
             strokeWidth={5}
             dot={false}
             activeDot={false}
@@ -248,7 +261,8 @@ export default function DualAxisAreaChart({
             type="monotone"
             dataKey={leftDataKey}
             name={leftName}
-            stroke={showLeft ? leftColor : "transparent"}
+            stroke={leftColor}
+            strokeOpacity={leftOpacity}
             strokeWidth={3}
             dot={false}
             activeDot={false}
@@ -258,6 +272,7 @@ export default function DualAxisAreaChart({
             animationEasing="ease-out"
           />
 
+          {/* RIGHT SERIES */}
           <Area
             yAxisId="right"
             type="monotone"
@@ -265,7 +280,7 @@ export default function DualAxisAreaChart({
             name={rightName}
             stroke="none"
             fill={rightColor}
-            fillOpacity={showRight ? 0.5 : 0}
+            fillOpacity={0.5 * rightOpacity}
             activeDot={false}
             isAnimationActive={animate}
             animationBegin={gwDelay}
@@ -277,7 +292,8 @@ export default function DualAxisAreaChart({
             yAxisId="right"
             type="monotone"
             dataKey={rightDataKey}
-            stroke={showRight ? "white" : "transparent"}
+            stroke="white"
+            strokeOpacity={rightOpacity}
             strokeWidth={5}
             dot={false}
             activeDot={false}
@@ -292,7 +308,8 @@ export default function DualAxisAreaChart({
             type="monotone"
             dataKey={rightDataKey}
             name={rightName}
-            stroke={showRight ? rightColor : "transparent"}
+            stroke={rightColor}
+            strokeOpacity={rightOpacity}
             strokeWidth={2.5}
             dot={false}
             activeDot={false}
@@ -306,7 +323,8 @@ export default function DualAxisAreaChart({
             <ReferenceLine
               yAxisId="right"
               x={referenceX}
-              stroke={showRight ? "rgba(255,255,255,0.3)" : "transparent"}
+              stroke="rgba(255,255,255,0.3)"
+              strokeOpacity={rightOpacity}
               strokeDasharray="4 4"
             />
           )}

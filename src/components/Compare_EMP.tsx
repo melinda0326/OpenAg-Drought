@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
+import { Typography } from "@mui/material";
+
 import OverlayEMPBarChart from "../vis/Compare_EMP_Bar";
 
 type RawRow = Record<string, string | number>;
@@ -24,25 +26,35 @@ export default function Compare_Water() {
   }, []);
 
   return (
-    <div
-      style={{
-        maxWidth: "var(--overlay-width)",
-        margin: "var(--overlay-margin)",
-      }}
-    >
-      <p
-        style={{
-          color: "#fff",
-          fontSize: "var(--body-size)",
-          fontFamily: "Inter, system-ui, sans-serif",
-          lineHeight: 1.6,
-          marginBottom: "2.5rem",
+  <div
+    style={{
+      margin: "var(--overlay-margin)",
+    }}
+  >
+    <div style={{ maxWidth: "var(--overlay-width)" }}>
+      <Typography
+        component="p"
+        variant="body1"
+      >
+        When less farmland is cultivated and production falls, fewer workers are
+        needed. Farmworkers and others employed in farm-related industries face
+        reduced job opportunities, shorter work seasons, and potential
+        unemployment.
+      </Typography>
+
+      <Typography
+        component="p"
+        variant="body1"
+        sx={{
+          mb: "var(--space-text-chart)",
         }}
       >
-        When less farmland is cultivated and production falls, fewer workers are needed. Farmworkers and others employed in farm-related industries face reduced job opportunities, shorter work seasons, and potential unemployment.
+        As drought reduced available water and more farmland was idled in 2022,
+        labor demand across agriculture declined compared to 2019.
+      </Typography>
+    </div>
 
-        As drought reduced available water and more farmland was idled in 2022, labor demand across agriculture declined compared to 2019.         </p>
-
+    <div style={{ maxWidth: "var(--chart-width)" }}>
       <OverlayEMPBarChart
         data={data}
         col2019="proportion_xwater"
@@ -51,5 +63,6 @@ export default function Compare_Water() {
         ylabel="Employment Rate (%) "
       />
     </div>
-  );
+  </div>
+);
 }

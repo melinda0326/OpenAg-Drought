@@ -20,8 +20,14 @@ const selectedCounties = [
 
 function humanReadableMoney(x: number): string {
   const abs = Math.abs(x);
-  if (abs >= 1_000_000_000) return `${(x / 1_000_000_000).toFixed(1)}B`;
-  if (abs >= 1_000_000) return `${(x / 1_000_000).toFixed(1)}M`;
+
+  const formatCompact = (value: number, suffix: string) => {
+    const rounded = Number(value.toFixed(1));
+    return `${rounded}${suffix}`;
+  };
+
+  if (abs >= 1_000_000_000) return formatCompact(x / 1_000_000_000, "B");
+  if (abs >= 1_000_000) return formatCompact(x / 1_000_000, "M");
   if (abs >= 1_000) return `${Math.round(x / 1_000)}K`;
   return `${Math.round(x)}`;
 }
@@ -111,7 +117,7 @@ export default function OverlayRevBarChart({
   useEffect(() => {
     if (!chartData.length) return;
 
-    const margin = { top: 50, right: 30, bottom: 50, left: 70 };
+    const margin = { top: 50, right: 25, bottom: 50, left: 90 };
     const innerWidth = containerW - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -154,22 +160,22 @@ export default function OverlayRevBarChart({
     .attr("dx", "0")
     .attr("dy", "0.8em")
     .style("fill", "white")
-    .style("font-size", "13px");
+    .style("font-size", "var(--body-size)");
 
     gx.selectAll("path,line").style("stroke", "white");
 
     const gy = g.append("g").call(yAxis);
-    gy.selectAll("text").style("fill", "white");
+    gy.selectAll("text").style("fill", "white").style("font-size", "var(--body-size)");
     gy.selectAll("path,line").style("stroke", "white");
 
     // y label
     g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -innerHeight / 2)
-      .attr("y", -50)
+      .attr("y", -75)
       .attr("text-anchor", "middle")
       .style("fill", "white")
-      .style("font-size", "14px")
+      .style("font-size", "var(--body-size)")
       .text(ylabel);
 
     // title
@@ -177,7 +183,7 @@ export default function OverlayRevBarChart({
       .attr("x", 0)
       .attr("y", -30)
       .style("fill", "white")
-      .style("font-size", "18px")
+      .style("font-size", "var(--body-size)")
       .style("font-weight", "600")
       .text(title);
 
@@ -245,7 +251,7 @@ export default function OverlayRevBarChart({
         .attr("x", 22)
         .attr("y", 11)
         .style("fill", "white")
-        .style("font-size", "13px")
+        .style("font-size", "var(--body-size)")
         .text(item.label);
     });
   }, [

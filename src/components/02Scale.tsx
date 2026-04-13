@@ -4,12 +4,14 @@ import StorySection from "./ui/StorySection";
 export default function Scale() {
   return (
     <StorySection>
-      <Box sx={{ width: "var(--overlay-width)", mt: "var(--space-md)" }}>
-        <Typography sx={{ fontSize: "var(--body-size)" }}>
-          California’s <Box component="span" sx={{ color: "#2f7d44", fontWeight: 700 }}>agricultural sector</Box> is the nation’s top producer and one of the most significant agricultural systems in the world.<br />
+      <Box sx={{ width: "var(--overlay-width)"}}>
+       <Typography variant="body1" gutterBottom>
+          California’s{" "} <Box component="span" sx={{ color: "#2f7d44", fontWeight: 700 }}> agricultural sector </Box>{" "}
+          is the nation’s top producer and one of the most significant agricultural
+          systems in the world.
         </Typography>
 
-        <Typography sx={{ fontSize: "1rem", opacity:"60%", mt: "--space-sm"}}>
+        <Typography sx={{ fontSize: "var(--source-size)", opacity:"60%"}}>
           GIS data source: 2024 Statewide Crop Mapping from{" "}
           <Link
             href="https://data.cnra.ca.gov/dataset/statewide-crop-mapping"

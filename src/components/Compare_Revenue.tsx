@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as d3 from "d3";
+import { Typography } from "@mui/material";
 import OverlayRevBarChart from "../vis/Compare_Revenue_Bar";
 import PictogramRevenue from "../vis/Pictogram_Revenue";
 
@@ -36,32 +37,23 @@ export default function Compare_Rev() {
 return (
   <div
     style={{
-      maxWidth: "var(--chart-width)",
       margin: "var(--overlay-margin)",
     }}
   >
-    {/* <div
-      style={{
-        background: "rgba(0, 0, 0, 0.55)",
-        backdropFilter: "blur(8px)",
-        borderRadius: 12,
-        padding: "2rem 2.5rem",
-      }}
-    > */}
-      <p
-        style={{
-          color: "#fff",
-          fontSize: "var(--body-size)",
-          lineHeight: 1.6,
-          marginTop: 0,
-          marginBottom: "2.5rem",
-          maxWidth: "var(--overlay-width)",
+    <div style={{ maxWidth: "var(--overlay-width)" }}>
+      <Typography
+        component="p"
+        variant="body1"
+        sx={{
+          mb: "var(--space-text-chart)",
         }}
       >
-        Lower production means fewer crops to harvest and sell.
-        Comparing 2019 and 2022 shows how drought directly affected agricultural income.
-      </p>
+        Lower production means fewer crops to harvest and sell. Comparing 2019
+        and 2022 shows how drought directly affected agricultural income.
+      </Typography>
+    </div>
 
+    <div style={{ maxWidth: "var(--chart-width)" }}>
       <OverlayRevBarChart
         data={data}
         col2019="proportion_gross_revenue_base"
@@ -73,10 +65,10 @@ return (
       {colusa && (
         <div
           id="pictogram-revenue"
-          style={{
-            marginTop: "2rem",
-            paddingRight: "8rem",
-          }}
+          // style={{
+          //   marginTop: "2rem",
+          //   paddingRight: "8rem",
+          // }}
         >
           <PictogramRevenue
             revenue2019={colusa.rev2019}
@@ -91,6 +83,6 @@ return (
         </div>
       )}
     </div>
-  // </div>
+  </div>
 );
 }

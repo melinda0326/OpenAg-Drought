@@ -5,11 +5,20 @@ export default function Transition1() {
   return (
     <StorySection>
       <Box sx={{ width: "var(--overlay-width)", mt: "var(--space-md)", textAlign: "center" }}>
-        <Typography sx={{ fontSize: "var(--body-size)" }}>
-          This agricultural system, however, depends on one essential resource: <br />
+        <Typography variant="body1" mb={3}>
+          This agricultural system, however, depends on one essential resource:
         </Typography>
 
-        <Typography sx={{ fontSize: "var(--title-size)", fontWeight:"600", mt: "var(--space-sm)", textAlign: "center", color:"#4287f5", fontStyle: "italic",}}>
+        <Typography
+          component="h3"
+          variant="h3"
+          sx={{
+            fontWeight: 600,
+            textAlign: "center",
+            color: "#4287f5",
+            fontStyle: "italic",
+          }}
+        >
           Water
         </Typography>
 
