@@ -1,154 +1,154 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {useEffect, useMemo, useRef, useState } from "react";
 import Map, { Layer, Source, Marker } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-function ConnectingLine({
-  mapRef,
-  lngLat,
-  targetId,
-}: {
-  mapRef: React.RefObject<MapRef | null>;
-  lngLat: [number, number];
-  targetId: string;
-}) {
-  const [coords, setCoords] = useState<{
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-    opacity: number;
-  } | null>(null);
+// function ConnectingLine({
+//   mapRef,
+//   lngLat,
+//   targetId,
+// }: {
+//   mapRef: React.RefObject<MapRef | null>;
+//   lngLat: [number, number];
+//   targetId: string;
+// }) {
+//   const [coords, setCoords] = useState<{
+//     x1: number;
+//     y1: number;
+//     x2: number;
+//     y2: number;
+//     opacity: number;
+//   } | null>(null);
 
-  const update = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    const target = document.getElementById(targetId);
+//   const update = useCallback(() => {
+//     const map = mapRef.current?.getMap();
+//     const target = document.getElementById(targetId);
 
-    if (!map || !target) {
-      setCoords(null);
-      return;
-    }
+//     if (!map || !target) {
+//       setCoords(null);
+//       return;
+//     }
 
-    const projected = map.project(lngLat);
-    const rect = target.getBoundingClientRect();
+//     const projected = map.project(lngLat);
+//     const rect = target.getBoundingClientRect();
 
-    const viewportH = window.innerHeight;
-    const viewportW = window.innerWidth;
+//     const viewportH = window.innerHeight;
+//     const viewportW = window.innerWidth;
 
-    const visibleTop = Math.max(rect.top, 0);
-    const visibleBottom = Math.min(rect.bottom, viewportH);
-    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-    const visibilityRatio = rect.height > 0 ? visibleHeight / rect.height : 0;
+//     const visibleTop = Math.max(rect.top, 0);
+//     const visibleBottom = Math.min(rect.bottom, viewportH);
+//     const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+//     const visibilityRatio = rect.height > 0 ? visibleHeight / rect.height : 0;
 
-    if (
-      rect.right < 0 ||
-      rect.left > viewportW ||
-      rect.bottom < 0 ||
-      rect.top > viewportH ||
-      visibilityRatio <= 0.08
-    ) {
-      setCoords(null);
-      return;
-    }
+//     if (
+//       rect.right < 0 ||
+//       rect.left > viewportW ||
+//       rect.bottom < 0 ||
+//       rect.top > viewportH ||
+//       visibilityRatio <= 0.08
+//     ) {
+//       setCoords(null);
+//       return;
+//     }
 
-    const t = Math.max(0, Math.min(1, visibilityRatio));
+//     const t = Math.max(0, Math.min(1, visibilityRatio));
 
-    // point to the middle of the number text
-    const targetX = rect.left + 8;
-    const targetY = rect.top + rect.height / 2;
+//     // point to the middle of the number text
+//     const targetX = rect.left + 8;
+//     const targetY = rect.top + rect.height / 2;
 
-    // retract line as target leaves viewport
-    const x2 = projected.x + (targetX - projected.x) * t;
-    const y2 = projected.y + (targetY - projected.y) * t;
+//     // retract line as target leaves viewport
+//     const x2 = projected.x + (targetX - projected.x) * t;
+//     const y2 = projected.y + (targetY - projected.y) * t;
 
-    setCoords({
-      x1: projected.x,
-      y1: projected.y,
-      x2,
-      y2,
-      opacity: t,
-    });
-  }, [mapRef, lngLat, targetId]);
+//     setCoords({
+//       x1: projected.x,
+//       y1: projected.y,
+//       x2,
+//       y2,
+//       opacity: t,
+//     });
+//   }, [mapRef, lngLat, targetId]);
 
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
+//   useEffect(() => {
+//     const map = mapRef.current?.getMap();
+//     if (!map) return;
 
-    map.on("move", update);
-    map.on("zoom", update);
-    map.on("rotate", update);
-    map.on("pitch", update);
+//     map.on("move", update);
+//     map.on("zoom", update);
+//     map.on("rotate", update);
+//     map.on("pitch", update);
 
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
+//     window.addEventListener("resize", update);
+//     window.addEventListener("scroll", update, true);
 
-    update();
-    const raf = requestAnimationFrame(update);
+//     update();
+//     const raf = requestAnimationFrame(update);
 
-    return () => {
-      map.off("move", update);
-      map.off("zoom", update);
-      map.off("rotate", update);
-      map.off("pitch", update);
+//     return () => {
+//       map.off("move", update);
+//       map.off("zoom", update);
+//       map.off("rotate", update);
+//       map.off("pitch", update);
 
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+//       window.removeEventListener("resize", update);
+//       window.removeEventListener("scroll", update, true);
 
-      cancelAnimationFrame(raf);
-    };
-  }, [mapRef, update]);
+//       cancelAnimationFrame(raf);
+//     };
+//   }, [mapRef, update]);
 
-  useEffect(() => {
-    let ticking = false;
+//   useEffect(() => {
+//     let ticking = false;
 
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => {
-          update();
-          ticking = false;
-        });
-      }
-    };
+//     const onScroll = () => {
+//       if (!ticking) {
+//         ticking = true;
+//         requestAnimationFrame(() => {
+//           update();
+//           ticking = false;
+//         });
+//       }
+//     };
 
-    window.addEventListener("scroll", onScroll, true);
-    return () => window.removeEventListener("scroll", onScroll, true);
-  }, [update]);
+//     window.addEventListener("scroll", onScroll, true);
+//     return () => window.removeEventListener("scroll", onScroll, true);
+//   }, [update]);
 
-  if (!coords) return null;
+//   if (!coords) return null;
 
-  return (
-    <svg
-      style={{
-        position: "fixed",
-        inset: 0,
-        width: "100vw",
-        height: "100vh",
-        pointerEvents: "none",
-        zIndex: 5,
-      }}
-    >
-      <line
-        x1={coords.x1}
-        y1={coords.y1}
-        x2={coords.x2}
-        y2={coords.y2}
-        stroke="white"
-        strokeWidth={2}
-        strokeDasharray="6 4"
-        opacity={0.75 * coords.opacity}
-      />
-      <circle
-        cx={coords.x1}
-        cy={coords.y1}
-        r={4}
-        fill="white"
-        opacity={0.9 * coords.opacity}
-      />
-    </svg>
-  );
-}
+//   return (
+//     <svg
+//       style={{
+//         position: "fixed",
+//         inset: 0,
+//         width: "100vw",
+//         height: "100vh",
+//         pointerEvents: "none",
+//         zIndex: 5,
+//       }}
+//     >
+//       <line
+//         x1={coords.x1}
+//         y1={coords.y1}
+//         x2={coords.x2}
+//         y2={coords.y2}
+//         stroke="white"
+//         strokeWidth={2}
+//         strokeDasharray="6 4"
+//         opacity={0.75 * coords.opacity}
+//       />
+//       <circle
+//         cx={coords.x1}
+//         cy={coords.y1}
+//         r={4}
+//         fill="white"
+//         opacity={0.9 * coords.opacity}
+//       />
+//     </svg>
+//   );
+// }
 
 const CA_BOUNDS : [[number, number], [number, number]] = [
   [-138, 33],   // move inward
