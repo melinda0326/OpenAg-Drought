@@ -81,7 +81,7 @@ export default function TemperatureLineChart({
       const svg = d3.select(svgRef.current);
       svg.selectAll("*").remove();
 
-      const margin = { top: 35, right: 35, bottom: 76, left: 72 };
+      const margin = { top: 45, right: 35, bottom: 76, left: 72 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
@@ -163,9 +163,9 @@ export default function TemperatureLineChart({
         .attr("stroke-dashoffset", totalLength * (1 - scrollProgress));
 
       root.append("text")
-        .attr("x", width / 2)
+        .attr("x", margin.left)
         .attr("y", 18)
-        .attr("text-anchor", "middle")
+        .attr("text-anchor", "start")
         .attr("fill", "white")
         .style("font-size", "var(--body-size)")
         .style("font-weight", "600")

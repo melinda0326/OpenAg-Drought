@@ -29,7 +29,7 @@ export default function PrecipitationBarChart({
   scrollProgress = 0,
 }: Props) {
 
-  const margin = { top: 50, right: 20, bottom: 76, left: 72 };
+  const margin = { top: 45, right: 20, bottom: 76, left: 72 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -205,11 +205,11 @@ export default function PrecipitationBarChart({
 
       {/* Chart title */}
       <text
-        x={width / 2}
+        x={margin.left}
         y={18}
         fill="white"
-        style={{ fontSize: "var(--body--size)", fontWeight: "600" }}
-        textAnchor="middle"
+        style={{ fontSize: "var(--body-size)", fontWeight: "600" }}
+        textAnchor="start"
       >
         {title}
       </text>

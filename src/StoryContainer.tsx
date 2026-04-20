@@ -18,8 +18,6 @@ import SurfaceGroundwaterChart from "./components/09_SW_GW";
 import Scale_EMP from "./components/05Scale_EMP";
 import Compare_Image from "./components/Compare_Image";
 import Compare_Land from "./components/Compare_Land";
-import Compare_Rev from "./components/Compare_Revenue";
-import Compare_EMP from "./components/Compare_EMP";
 import Transition1 from "./components/Transition1";
 import Transition2 from "./components/Transition2";
 import Transition3 from "./components/Transition3";
@@ -68,6 +66,7 @@ export default function StoryContainer() {
   const [activeSection, setActiveSection] = useState<StepId>("opener");
   const [,setIsMapReady] = useState(false);
   const [shortage, setShortage] = useState<number>(0);
+  const [compareAspect, setCompareAspect] = useState(0);
   const [metric, setMetric] = useState<MetricKey>("revenue_pct");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
 
@@ -262,6 +261,7 @@ export default function StoryContainer() {
           shortage={shortage}
           droughtGeojson={droughtGeojson}
           countyGeojson={geojsonData}
+          compareAspect={compareAspect}
         />
       </Box>
 
@@ -358,20 +358,8 @@ export default function StoryContainer() {
           </Step>
 
           <Step data="compare-land">
-            <div style={{ marginBottom: "20vh", paddingTop: "5rem", pointerEvents: "auto" }}>
-              <Compare_Land />
-            </div>
-          </Step>
-
-          <Step data="compare-rev">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
-              <Compare_Rev />
-            </div>
-          </Step>
-
-          <Step data="compare-water">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
-              <Compare_EMP />
+            <div style={{ pointerEvents: "auto" }}>
+              <Compare_Land onAspectChange={setCompareAspect} />
             </div>
           </Step>
 

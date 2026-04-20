@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, { Layer, Source, Marker } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
@@ -158,7 +158,7 @@ const CA_BOUNDS : [[number, number], [number, number]] = [
 const ZOOMED_MAP_VIEW = {
   longitude: -124.665,
   latitude: 37.033,
-  zoom: 6.92,
+  zoom: 6.5,
 };
 
 
@@ -198,6 +198,7 @@ type CaliforniaMapProps = {
   clickedCountyData?: CountyPictogramData;
   onCountyClick?: (countyName: string | null) => void;
   metric?: "xland_pct" | "xwater_pct" | "revenue_pct";
+  compareAspect?: number;
 };
 
 const DROUGHT_COLORS = ["#FFE5CC", "#FFB366", "#FF8C1A", "#E67300", "#B34700"];
@@ -209,6 +210,7 @@ export default function CaliforniaMap({
   shortage,
   droughtGeojson,
   countyGeojson,
+  compareAspect = 0,
 }: CaliforniaMapProps) {
 
   console.log("activeSection:", activeSection);
@@ -224,14 +226,15 @@ export default function CaliforniaMap({
   }, [isCentralValleyCropStep]);
   const isReducedCropStep = activeSection === "state-crop-rv" || activeSection === "state-crop-emp";
   const isCompareLand = activeSection === "compare-land";
-  const isCompareRev = activeSection === "compare-rev";
+
+  const isDroughtMonitor = activeSection === "drought_monitor";
   const cameraMode = isCompareLand
   ? "colusa"
   : isReducedCropStep
     ? "cv-rv"
     : isCentralValleyCropStep
       ? "cv"
-      : isOpenExploration
+      : (isOpenExploration || isDroughtMonitor || activeSection === "opener")
         ? "state"
         : "zoomed-state";
 
@@ -298,17 +301,54 @@ export default function CaliforniaMap({
     );
   }
 
-  const CROP_LEGEND = [
-  { code: "G",  color: "#C2A83E", label: "Grain & Hay" },                // wheat / hay gold
-  { code: "R",  color: "#5FA8D3", label: "Rice" },                       // watery blue
-  { code: "F",  color: "#6DA34D", label: "Field Crops" },                // crop green
-  { code: "P",  color: "#A3B18A", label: "Pasture" },                    // muted grass green
-  { code: "T",  color: "#db3923", label: "Truck & Berry" },              // produce orange
-  { code: "D",  color: "#f7c46a", label: "Deciduous Fruits & Nuts" },    // orchard brown
-  { code: "C",  color: "#d17819", label: "Citrus & Subtropical" },       // citrus yellow
-  { code: "V",  color: "#6F4E7C", label: "Vineyard" },                   // grape purple
-  { code: "YP", color: "#D4A373", label: "Young Perennial" },            // light tan / young wood
+  const CROP_LEGEND_BASE = [
+  { code: "G",  color: "#C2A83E", label: "Grain & Hay" },
+  { code: "R",  color: "#5FA8D3", label: "Rice" },
+  { code: "F",  color: "#6DA34D", label: "Field Crops" },
+  { code: "P",  color: "#A3B18A", label: "Pasture" },
+  { code: "T",  color: "#db3923", label: "Truck & Berry" },
+  { code: "D",  color: "#f7c46a", label: "Deciduous Fruits & Nuts" },
+  { code: "C",  color: "#d17819", label: "Citrus & Subtropical" },
+  { code: "V",  color: "#6F4E7C", label: "Vineyard" },
+  { code: "YP", color: "#D4A373", label: "Young Perennial" },
 ];
+
+  const [cropCounts, setCropCounts] = useState<Record<string, number>>({});
+
+  // Query visible crop features whenever the crop step or camera changes
+  useEffect(() => {
+    if (!isCentralValleyCropStep) return;
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const queryCrops = () => {
+      const features = map.querySourceFeatures("cv-source", {
+        sourceLayer: "state_crop-arjis8",
+      });
+      const counts: Record<string, number> = {};
+      for (const f of features) {
+        const code = f.properties?.SYMB_CLASS;
+        if (code) counts[code] = (counts[code] || 0) + 1;
+      }
+      setCropCounts(counts);
+    };
+
+    // Query after tiles settle
+    if (map.isSourceLoaded("cv-source")) {
+      queryCrops();
+    }
+    map.on("idle", queryCrops);
+    return () => { map.off("idle", queryCrops); };
+  }, [isCentralValleyCropStep, activeSection]);
+
+  // Sort legend by feature count (descending)
+  const CROP_LEGEND = useMemo(() => {
+    const hasData = Object.keys(cropCounts).length > 0;
+    if (!hasData) return CROP_LEGEND_BASE;
+    return [...CROP_LEGEND_BASE].sort(
+      (a, b) => (cropCounts[b.code] || 0) - (cropCounts[a.code] || 0)
+    );
+  }, [cropCounts]);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
@@ -526,6 +566,7 @@ export default function CaliforniaMap({
                   ]
                 : 0.88
               : 0,
+            "fill-opacity-transition": { duration: 300, delay: 0 },
             "fill-outline-color": "transparent",
             "fill-antialias": true,
           }}
@@ -534,7 +575,7 @@ export default function CaliforniaMap({
 
       {isCompareLand && (
         <>
-          {/* 2019 layer (bottom — larger area) */}
+          {/* 2019 layer — only for Land aspect (0) */}
           <Source
             id="colusa-2019"
             type="vector"
@@ -546,11 +587,12 @@ export default function CaliforniaMap({
               source-layer="2019_colusa_rice-0cylad"
               paint={{
                 "fill-color": "#1B5E20",
-                "fill-opacity": 0.85,
+                "fill-opacity": compareAspect === 0 ? 0.85 : 0,
+                "fill-opacity-transition": { duration: 400, delay: 0 },
               }}
             />
           </Source>
-          {/* 2022 layer (top — smaller area, sits on top of 2019) */}
+          {/* 2022 layer — only for Land aspect (0) */}
           <Source
             id="colusa-2022"
             type="vector"
@@ -562,12 +604,13 @@ export default function CaliforniaMap({
               source-layer="2022_colusa_rice-3aafpc"
               paint={{
                 "fill-color": "#A5D6A7",
-                "fill-opacity": 0.85,
+                "fill-opacity": compareAspect === 0 ? 0.85 : 0,
+                "fill-opacity-transition": { duration: 400, delay: 0 },
               }}
             />
           </Source>
 
-          {/* Colusa county boundary highlight */}
+          {/* Colusa county boundary highlight — always visible */}
           {countyGeojson && (
             <Source id="colusa-boundary" type="geojson" data={countyGeojson}>
               <Layer
@@ -591,7 +634,7 @@ export default function CaliforniaMap({
             </Source>
           )}
 
-          {/* Colusa label */}
+          {/* Colusa label — always visible */}
           <Marker longitude={-122.1} latitude={38.85} anchor="bottom">
             <div
               style={{
@@ -609,57 +652,6 @@ export default function CaliforniaMap({
         </>
       )}
 
-      {/* ── Compare-Rev: Colusa county highlight + connecting line ── */}
-      {isCompareRev && countyGeojson && (
-        <>
-          <Source id="colusa-rev-boundary" type="geojson" data={countyGeojson}>
-            <Layer
-              id="colusa-rev-glow"
-              type="line"
-              filter={["==", ["get", "CountyName"], "Colusa"]}
-              paint={{
-                "line-color": "rgba(255,255,255,0.3)",
-                "line-width": 6,
-              }}
-            />
-            <Layer
-              id="colusa-rev-line"
-              type="line"
-              filter={["==", ["get", "CountyName"], "Colusa"]}
-              paint={{
-                "line-color": "#ffffff",
-                "line-width": 2.5,
-              }}
-            />
-            <Layer
-              id="colusa-rev-fill"
-              type="fill"
-              filter={["==", ["get", "CountyName"], "Colusa"]}
-              paint={{
-                "fill-color": "#E65100",
-                "fill-opacity": 0.35,
-              }}
-            />
-          </Source>
-
-          {/* Colusa label */}
-          <Marker longitude={-122.23} latitude={39.18} anchor="center">
-            <div
-              style={{
-                color: "white",
-                fontSize: "var(--body-size)",
-                fontWeight: 700,
-                textShadow: "0 1px 6px rgba(0,0,0,0.8)",
-                pointerEvents: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Colusa County
-            </div>
-          </Marker>
-
-        </>
-      )}
 
       {activeSection === "drought_monitor" && droughtGeojson && (
         <Source id="drought-counties" type="geojson" data={droughtGeojson}>
@@ -691,14 +683,6 @@ export default function CaliforniaMap({
       )}
     </Map>
 
-    {/* Connecting line: Colusa → pictogram */}
-    {isCompareRev && (
-      <ConnectingLine
-  mapRef={mapRef}
-  lngLat={[-122.23, 39.18]}
-  targetId="pictogram-revenue-number"
-/>
-    )}
 
     {/* Drought legend */}
     {activeSection === "drought_monitor" && (
@@ -757,7 +741,7 @@ export default function CaliforniaMap({
       </div>
     )}
 
-    {isCompareLand && (
+    {isCompareLand && compareAspect === 0 && (
       <div
         style={{
           position: "absolute",
@@ -847,7 +831,7 @@ export default function CaliforniaMap({
             fontSize: "var(--body-size)",
           }}
         >
-          Hover over the legend to highlight a specific crop
+          Hover over the legend
         </span>
 
         {(isReducedCropStep

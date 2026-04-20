@@ -114,14 +114,7 @@ export default function DroughtCumulativeAreaChart({
       >
         Why California Faces Drought
       </h2> */}
-      <Typography component="h2" variant="h2"
-        sx={{
-          color: "white",
-          fontWeight: 700,
-          lineHeight: 1.2,
-        }}
-        gutterBottom
-      >
+      <Typography component="h3" variant="h3" gutterBottom>
         Why California Faces Drought
       </Typography>
       <Typography

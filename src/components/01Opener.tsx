@@ -4,7 +4,7 @@ import StorySection from "./ui/StorySection";
 export default function Opener() {
   return (
     <StorySection>
-      <Box sx={{ width: "min(80vw)" }}>
+      <Box sx={{width: "var(--overlay-width)" }}>
         <Typography component="h2" variant="h2" gutterBottom>
           How California Agriculture Responds with Drought
         </Typography>
