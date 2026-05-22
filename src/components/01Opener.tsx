@@ -1,7 +1,18 @@
+import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import StorySection from "./ui/StorySection";
 
 export default function Opener() {
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setHasScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <StorySection>
       <Box sx={{width: "var(--overlay-width)" }}>
@@ -43,7 +54,46 @@ export default function Opener() {
             },
           }}
         >
-          Explore the Drought
+          Simulate Drought Impacts
+        </Box>
+      </Box>
+
+      {/* Scroll indicator */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 32,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 0.5,
+          opacity: hasScrolled ? 0 : 0.6,
+          transition: "opacity 0.5s ease",
+          pointerEvents: hasScrolled ? "none" : "auto",
+          animation: "scrollBounce 2s ease-in-out infinite",
+          "@keyframes scrollBounce": {
+            "0%, 100%": { transform: "translateX(-50%) translateY(0)" },
+            "50%": { transform: "translateX(-50%) translateY(8px)" },
+          },
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "var(--source-size)",
+            color: "rgba(255,255,255,0.7)",
+            textTransform: "uppercase",
+          }}
+        >
+          Scroll to explore
+        </Typography>
+        <Box
+          component="svg"
+          viewBox="0 0 24 24"
+          sx={{ width: 24, height: 24, fill: "none", stroke: "rgba(255,255,255,0.7)", strokeWidth: 2 }}
+        >
+          <path d="M12 5v14M5 12l7 7 7-7" />
         </Box>
       </Box>
     </StorySection>

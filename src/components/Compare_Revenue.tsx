@@ -35,54 +35,37 @@ export default function Compare_Rev() {
   }, [data]);
 
 return (
-  <div
-    style={{
-      margin: "var(--overlay-margin)",
-    }}
-  >
-    <div style={{ maxWidth: "var(--overlay-width)" }}>
-      <Typography
-        component="p"
-        variant="body1"
-        sx={{
-          mb: "var(--space-text-chart)",
-        }}
-      >
-        Lower production means fewer crops to harvest and sell. Comparing 2019
-        and 2022 shows how drought directly affected agricultural income.
-      </Typography>
-    </div>
-
-    <div style={{ maxWidth: "var(--chart-width)" }}>
-      <OverlayRevBarChart
-        data={data}
-        col2019="proportion_gross_revenue_base"
-        col2022="proportion_grev_sc"
-        title="Revenue Comparision betweeen 2019 and 2022"
-        ylabel="Revenue ($)"
-      />
-
-      {colusa && (
-        <div
-          id="pictogram-revenue"
-          // style={{
-          //   marginTop: "2rem",
-          //   paddingRight: "8rem",
-          // }}
-        >
-          <PictogramRevenue
-            revenue2019={colusa.rev2019}
-            revenue2022={colusa.rev2022}
-            squareValue={5_000_000}
-            cols={3}
-            squareSize={14}
-            gap={4}
-            colorLoss="#E65100"
-            color2022="#FFCC80"
-          />
-        </div>
-      )}
-    </div>
+  <div style={{ maxWidth: "var(--chart-width)" }}>
+  <div style={{ width: "100%" }}>
+    <OverlayRevBarChart
+      data={data}
+      col2019="proportion_gross_revenue_base"
+      col2022="proportion_grev_sc"
+      title="Revenue Comparison between 2019 and 2022"
+      ylabel="Revenue ($)"
+    />
   </div>
+
+  {colusa && (
+    <div
+      id="pictogram-revenue"
+      style={{
+        width: "100%",
+        marginTop: 24,
+      }}
+    >
+      <PictogramRevenue
+        revenue2019={colusa.rev2019}
+        revenue2022={colusa.rev2022}
+        squareValue={5_000_000}
+        cols={3}
+        squareSize={14}
+        gap={4}
+        colorLoss="#E65100"
+        color2022="#FFCC80"
+      />
+    </div>
+  )}
+</div>
 );
 }

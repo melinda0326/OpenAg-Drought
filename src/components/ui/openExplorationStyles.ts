@@ -208,6 +208,43 @@ export const openExplorationStyles = {
     transition: "all 160ms ease",
   }),
 
+  stepRow: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 6,
+  } as React.CSSProperties,
+
+  stepNum: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 22,
+    height: 22,
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.12)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    fontSize: 11,
+    fontWeight: 700,
+    color: "rgba(255,255,255,0.7)",
+    marginRight: 8,
+    flexShrink: 0,
+  } as React.CSSProperties,
+
+  stepTitle: {
+    fontSize: "var(--source-size)",
+    fontWeight: 700,
+    letterSpacing: 1.2,
+    textTransform: "uppercase" as const,
+    color: "rgba(255,255,255,0.7)",
+  } as React.CSSProperties,
+
+  stepDesc: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.5)",
+    lineHeight: 1.4,
+    marginBottom: 10,
+  } as React.CSSProperties,
+
   tooltip: {
     position: "absolute" as const,
     zIndex: 10,
@@ -227,8 +264,13 @@ export const openExplorationStyles = {
 } as const;
 
 export const openExplorationSliderCss = `
+@keyframes thumbGlow {
+  0%, 100% { box-shadow: 0 0 6px 3px rgba(255,255,255,0.15); }
+  50% { box-shadow: 0 0 22px 14px rgba(255,255,255,0.5); }
+}
 input[type="range"] {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 30px;
   background: transparent;
@@ -236,18 +278,51 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
   height: 10px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.14);
+}
+input[type="range"]::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+input[type="range"].colored-track::-webkit-slider-runnable-track {
+  background:
+    linear-gradient(
+      to right,
+      rgba(244,67,54,0.7)
+    )
+    0 0 / var(--slider-pct, 0%) 100% no-repeat,
+    rgba(255,255,255,0.12);
+}
+input[type="range"].colored-track::-moz-range-track {
+  background:
+    linear-gradient(
+      to right,
+      rgba(244,67,54,0.7)
+    )
+    0 0 / var(--slider-pct, 0%) 100% no-repeat,
+    rgba(255,255,255,0.12);
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
+  appearance: none;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   background: rgba(255,255,255,0.92);
   border: 3px solid rgba(10,12,18,0.85);
-  margin-top: -5px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+  margin-top: -5px;  /* Adjusted */
+  box-shadow: 0 0 12px 4px rgba(255,255,255,0.3);  /* Changed to wrap around */
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  border: 3px solid rgba(10,12,18,0.85);
+  box-shadow: 0 0 12px 4px rgba(255,255,255,0.3);  /* Changed to wrap around */
 }
 input[type="range"]:focus { outline: none; }
 `;

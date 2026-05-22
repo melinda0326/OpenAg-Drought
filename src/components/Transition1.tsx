@@ -5,7 +5,7 @@ export default function Transition1() {
   return (
     <StorySection>
       <Box sx={{ width: "var(--overlay-width)", mt: "var(--space-md)", textAlign: "center" }}>
-        <Typography variant="body1" mb={3}>
+        <Typography variant="body1" gutterBottom>
           This agricultural system, however, depends on one essential resource:
         </Typography>
 

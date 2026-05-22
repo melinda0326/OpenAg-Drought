@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import type { CsvRow } from "../components/OpenExploration";
 import { openExplorationStyles as S } from "../components/ui/openExplorationStyles";
 import Pictogram from "./Pictogram_Open";
+import { Typography } from "@mui/material";
 
 type MetricKey = "xland_pct" | "xwater_pct" | "revenue_pct";
 type MetricAbsKey = "land" | "water" | "revenue";
@@ -319,100 +320,117 @@ export default function CentralValleyBaseScenarioBars({
   });
 
   return (
-    <div style={{ width: "100%", marginTop: 10 }}>
-      <div style={S.title}>Without Shortage vs With Shortage</div>
+  <div style={{ width: "100%", marginTop: 10 }}>
+    <Typography variant="body1" style={S.title}>
+      Without Shortage vs With Shortage
+    </Typography>
 
-      {/* Tab switcher */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginBottom: 12,
-          marginTop: 8,
-        }}
+    {/* Tab switcher */}
+    <div
+      style={{
+        display: "flex",
+        gap: 8,
+        marginBottom: 12,
+        marginTop: 8,
+      }}
+    >
+      <button
+        style={tabStyle(activeTab === "bar")}
+        onClick={() => setActiveTab("bar")}
       >
-        <button style={tabStyle(activeTab === "bar")} onClick={() => setActiveTab("bar")}>
+        <Typography component="span" variant="body2">
           Bar Chart
-        </button>
-        <button style={tabStyle(activeTab === "pictogram")} onClick={() => setActiveTab("pictogram")}>
+        </Typography>
+      </button>
+
+      <button
+        style={tabStyle(activeTab === "pictogram")}
+        onClick={() => setActiveTab("pictogram")}
+      >
+        <Typography component="span" variant="body2">
           Pictogram
-        </button>
-      </div>
-
-      {/* Bar chart tab */}
-      {activeTab === "bar" && (
-        <MetricMiniChart
-          title={METRIC_TITLE[metric]}
-          counties={data.counties}
-          baseVals={data.baseVals}
-          scVals={data.scVals}
-        />
-      )}
-
-      {/* Pictogram tab */}
-      {activeTab === "pictogram" && (
-        <>
-          {pictogramData.length > 0 ? (
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 8,
-                  marginBottom: 10,
-                  flexWrap: "wrap",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 800,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                    color: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  Impact by County
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "rgba(255,255,255,0.45)",
-                    fontWeight: 500,
-                  }}
-                >
-                  Each square = {formatSquareLegend(sqVal, unit)}
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 14,
-                }}
-              >
-                {pictogramData.map((d) => (
-                  <div key={d.county} style={{ width: 90 }}>
-                    <Pictogram
-                      label={titleCaseCounty(d.county)}
-                      baseValue={d.base}
-                      scenarioValue={d.sc}
-                      squareValue={sqVal}
-                      cols={5}
-                      squareSize={8}
-                      gap={1.5}
-                      unit={unit}
-                      colorBase="#ff6b6b"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div style={S.hint}>No loss data to display.</div>
-          )}
-        </>
-      )}
+        </Typography>
+      </button>
     </div>
-  );
+
+    {/* Bar chart tab */}
+    {activeTab === "bar" && (
+      <MetricMiniChart
+        title={METRIC_TITLE[metric]}
+        counties={data.counties}
+        baseVals={data.baseVals}
+        scVals={data.scVals}
+      />
+    )}
+
+    {/* Pictogram tab */}
+    {activeTab === "pictogram" && (
+      <>
+        {pictogramData.length > 0 ? (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 8,
+                marginBottom: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.8,
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
+                Impact by County
+              </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.45)",
+                  fontWeight: 500,
+                }}
+              >
+                Each square = {formatSquareLegend(sqVal, unit)}
+              </Typography>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 14,
+              }}
+            >
+              {pictogramData.map((d) => (
+                <div key={d.county} style={{ width: 90 }}>
+                  <Pictogram
+                    label={titleCaseCounty(d.county)}
+                    baseValue={d.base}
+                    scenarioValue={d.sc}
+                    squareValue={sqVal}
+                    cols={5}
+                    squareSize={8}
+                    gap={1.5}
+                    unit={unit}
+                    colorBase="#ff6b6b"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <Typography style={S.hint}>
+            No loss data to display.
+          </Typography>
+        )}
+      </>
+    )}
+  </div>
+);
 }

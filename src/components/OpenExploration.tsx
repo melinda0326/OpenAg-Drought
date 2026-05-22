@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { Typography } from "@mui/material";
 
 import { openExplorationSliderCss } from "./ui/openExplorationStyles";
 
@@ -24,23 +25,6 @@ export type CsvRow = {
   revenuesc?: number;
 };
 
-const CENTRAL_VALLEY_COUNTIES = new Set([
-  "butte",
-  "colusa",
-  "fresno",
-  "glenn",
-  "kern",
-  "kings",
-  "madera",
-  "merced",
-  "sacramento",
-  "san joaquin",
-  "stanislaus",
-  "sutter",
-  "tulare",
-  "yolo",
-  "yuba",
-]);
 
 function normalizeCountyName(v: unknown): string {
   return String(v ?? "")
@@ -211,20 +195,7 @@ export default function OpenExploration({
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [geojsonData]);
 
-  useEffect(() => {
-    if (allCountyOptions.length === 0) return;
-
-    setSelectedCounties((prev) => {
-      if (prev.length) return prev;
-
-      const available = new Set(allCountyOptions.map((d) => d.norm));
-      const initial = Array.from(CENTRAL_VALLEY_COUNTIES).filter((c) =>
-        available.has(c)
-      );
-
-      return initial.length ? initial : allCountyOptions.map((d) => d.norm);
-    });
-  }, [allCountyOptions, setSelectedCounties]);
+  // No auto-select — start with no counties selected
 
   const boxSkin: React.CSSProperties = {
   padding: 14,
@@ -264,6 +235,14 @@ export default function OpenExploration({
         pointerEvents: "auto",
       }}
     >
+      {/* section heading */}
+      <Typography component="h3" variant="h3" gutterBottom>
+        Explore County-Level Impacts
+      </Typography>
+      <Typography component="p" variant="body1" gutterBottom>
+        Adjust the controls below to simulate drought scenarios on the map.
+      </Typography>
+
       {/* panel container */}
       <div style={{ ...boxSkin, width: "var(--overlay-width)" }}>
         <OpenExplorationPanel

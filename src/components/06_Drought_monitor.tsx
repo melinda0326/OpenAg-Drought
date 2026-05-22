@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {Typography, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import * as d3 from "d3";
 import StackedAreaChart, { type BandDef } from "../vis/StackedAreaChart";
 
@@ -102,97 +102,107 @@ export default function DroughtCumulativeAreaChart({
   const xAccessor = useMemo(() => (d: Row) => d.MapDate, []);
 
   return (
-    <div style={{ margin: "var(--overlay-margin)",  }}>
-      {/* <h2
-        style={{
-          color: "white",
-          fontSize: "var(--title-size)",
-          fontWeight: 700,
-          maxWidth: "var(--overlay-width)",
-          lineHeight: 1.2,
-        }}
-      >
-        Why California Faces Drought
-      </h2> */}
-      <Typography component="h3" variant="h3" gutterBottom>
-        Why California Faces Drought
-      </Typography>
-      <Typography
-        component="p"
-        variant="body1"
+  <div
+    style={{
+      margin: "var(--overlay-margin)",
+      width: "var(--overlay-width)",
+      maxWidth: "var(--overlay-width)",
+    }}
+  >
+    <Typography component="h3" variant="h3" gutterBottom>
+      Why California Faces Drought
+    </Typography>
+
+    <Typography component="p" variant="body1" gutterBottom>
+      Drought has always been part of California's natural climate. However,
+      climate change is acting as a powerful amplifier, intensifying the
+      severity of these dry periods.
+    </Typography>
+
+    <Typography
+      sx={{
+        fontSize: "var(--source-size)",
+        opacity: "60%",
+        color: "#fff",
+        marginBottom: "3rem",
+      }}
+      gutterBottom
+    >
+      Drought Index data source from{" "}
+      <Link
+        href="https://droughtmonitor.unl.edu/DmData/TimeSeries.aspx"
+        target="_blank"
+        rel="noopener"
         sx={{
-          maxWidth: "var(--overlay-width)",
-          color: "#fff",
-          fontSize: "var(--body-size)",
+          color: "inherit",
+          opacity: 0.6,
+          textDecoration: "underline",
+          textDecorationColor: "rgba(255,255,255,0.7)",
+          "&:hover": {
+            color: "inherit",
+            opacity: 1,
+            textDecoration: "underline",
+            textDecorationColor: "currentColor",
+          },
+          "&:visited": {
+            color: "inherit",
+          },
         }}
-        gutterBottom
       >
-        Drought has always been part of California's natural climate. However,
-        climate change is acting as a powerful amplifier, intensifying the
-        severity of these dry periods.
-      </Typography>
+        U.S. Drought Monitor
+      </Link>
+    </Typography>
 
-      <Typography sx={{fontSize: "var(--source-size)", opacity:"60%", mt: "--space-sm", color: "#fff", marginBottom: "5rem",}}>
-          Drought Index data source from{" "}
-          <Link
-            href="https://droughtmonitor.unl.edu/DmData/TimeSeries.aspx"
-            target="_blank"
-            rel="noopener"
-            sx={{
-              color: "inherit",
-              opacity: 0.6,
-              textDecoration: "underline",            
-              textDecorationColor: "rgba(255,255,255,0.7)",
-              "&:hover": {
-                color: "inherit",
-                opacity: 1,
-                textDecoration: "underline",          // 👈 keep underline on hover
-                textDecorationColor: "currentColor",
-              },
-              "&:visited": {
-                color: "inherit",
-              },
-            }}
-          >
-            U.S. Drought Monitor
-          </Link>
-        </Typography>
-
-      <div style={{ maxWidth: "var(--chart-width)"}}>
-        <StackedAreaChart<Row>
-          data={data}
-          xAccessor={xAccessor}
-          bands={BANDS}
-          width={width}
-          height={height}
-          title={title}
-          xLabel="Year"
-          yLabel="Drought Coverage (%)"
-          yDomain={[0, 100]}
-          xTickInterval={2}
-          margin={{ top: 45, right: 30, bottom: 75, left: 70 }}
-          referenceLines={referenceLines}
-          hover={true}
-          showLegend={false}
-          onHoverDate={onHoverDate}
-        />
-
-        <p
-        style={{
-            color: "rgba(255,255,255,0.7)",
-            fontSize: "var(--body-size)",
-            marginTop: "2rem",
-            marginBottom: 0,
-            fontStyle: "italic",
-            textAlign: "left",
+    <Box
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 1,
+        px: 1.5,
+        py: 0.75,
+        mb: 2,
+        borderRadius: "999px",
+        background: "rgba(255,255,255,0.1)",
+        backdropFilter: "blur(4px)",
+        // animation: "hintPulse 2.5s ease-in-out 3",
+        // "@keyframes hintPulse": {
+        //   "0%, 100%": { opacity: 0.6 },
+        //   "50%": { opacity: 1 },
+        // },
+      }}
+    >
+      <Typography
+        variant="body1"
+        component="span"
+        sx={{
+          fontStyle: "italic",
+          // fontWeight: 600,
+          color: "rgba(255,255,255,0.9)",
         }}
-        >
+      >
         Hover to explore the detailed distribution of drought conditions
-        </p>
-      </div>
+      </Typography>
+    </Box>
 
+    <div style={{ maxWidth: "var(--chart-width)" }}>
+      <StackedAreaChart<Row>
+        data={data}
+        xAccessor={xAccessor}
+        bands={BANDS}
+        width={width}
+        height={height}
+        title={title}
+        xLabel="Year"
+        yLabel="Drought Coverage (%)"
+        yDomain={[0, 100]}
+        xTickInterval={2}
+        margin={{ top: 45, right: 30, bottom: 75, left: 70 }}
+        referenceLines={referenceLines}
+        hover={true}
+        showLegend={false}
+        onHoverDate={onHoverDate}
+      />
     </div>
-
-    
-  );
+  </div>
+);
 }

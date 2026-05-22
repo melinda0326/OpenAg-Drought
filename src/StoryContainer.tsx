@@ -70,6 +70,14 @@ export default function StoryContainer() {
   const [metric, setMetric] = useState<MetricKey>("revenue_pct");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
 
+  const handleCountyClick = useCallback((rawName: string) => {
+    const norm = normalizeCountyName(rawName);
+    if (!norm) return;
+    setSelectedCounties((prev) =>
+      prev.includes(norm) ? prev.filter((c) => c !== norm) : [...prev, norm]
+    );
+  }, []);
+
   const [geojsonData, setGeojsonData] = useState<CountiesFC | null>(null);
   const [csvRows, setCsvRows] = useState<CsvRow[] | null>(null);
   /** Multi-date drought map rows, indexed by date string (YYYYMMDD) → rows[] */
@@ -92,7 +100,7 @@ export default function StoryContainer() {
         const [gjRes, csvRes, dmRes] = await Promise.all([
           fetch("/data/california_counties.geojson"),
           fetch("/data/grouped_results_by_county.csv"),
-          fetch("/data/drought_with_dominant_category.csv"),
+          fetch("/data/drought_with_least_area_category.csv"),
         ]);
 
         if (!gjRes.ok) {
@@ -262,7 +270,69 @@ export default function StoryContainer() {
           droughtGeojson={droughtGeojson}
           countyGeojson={geojsonData}
           compareAspect={compareAspect}
+          onCountyClick={handleCountyClick}
         />
+      </Box>
+
+      {/* Floating color legend pill — visible only during open-exploration */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+          zIndex: 10,
+          opacity: activeSection === "open-exploration" ? 1 : 0,
+          pointerEvents: activeSection === "open-exploration" ? "auto" : "none",
+          transition: "opacity 0.4s ease",
+          background: "rgba(10, 12, 18, 0.72)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "14px",
+          padding: "12px 16px",
+          width: 220,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+        }}
+      >
+        <Box
+          sx={{
+            fontSize: "var(--source-size)",
+            textAlign: "center",
+            color: "rgba(255,255,255,0.85)",
+            mb: 0.5,
+          }}
+        >
+          % change in{" "}
+          <Box component="span" sx={{ fontWeight: 800 }}>
+            {metric === "revenue_pct"
+              ? "crop revenues"
+              : metric === "xwater_pct"
+              ? "water usage"
+              : "land acreage"}
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            height: 10,
+            borderRadius: "999px",
+            border: "1px solid rgba(255,255,255,0.14)",
+            background:
+              "linear-gradient(to left, #ffe5e5, #ff9999, #ff4d4d, #e60000, #990000)",
+          }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mt: 0.5,
+            fontSize: 10,
+            color: "rgba(255,255,255,0.55)",
+          }}
+        >
+          <span>-600%</span>
+          <span>-300%</span>
+          <span>0%</span>
+        </Box>
       </Box>
 
       <Box
@@ -370,7 +440,7 @@ export default function StoryContainer() {
           </Step>
 
           <Step data="open-exploration">
-            <div id="open-exploration" style={{ pointerEvents: "auto" }}>
+            <div id="open-exploration" style={{ pointerEvents: "none" }}>
             <OpenExploration
               shortage={shortage}
               setShortage={setShortage}

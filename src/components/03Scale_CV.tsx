@@ -32,6 +32,7 @@ export default function Scale_CV() {
             mx: "auto",
             textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
           }}
+          gutterBottom
         >
           8.5 million irrigated land
         </Typography>
@@ -45,8 +46,11 @@ export default function Scale_CV() {
               "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
           }}
         >
-          area used for agriculture in California, and nearly 9.3 million when we
-          include multi-cropping in a year.
+          used for agriculture in California,
+          <br />
+          and nearly 9.3&nbsp;million when we include
+          <br />
+          multi-cropping in a year.
         </Typography>
       </Box>
     </Box>

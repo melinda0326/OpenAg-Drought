@@ -101,7 +101,7 @@ export default function PictogramRevenue({
       {/* Pictogram grid */}
       <svg
         viewBox={`0 0 ${svgW} ${svgH}`}
-        style={{ display: "block", width: "80%", height: "auto",    marginLeft: "-20px", }}
+        style={{ display: "block", width: "80%", height: "auto",}}
       >
         {squares.map((sq, i) => (
           <rect

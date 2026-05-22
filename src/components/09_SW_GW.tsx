@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import * as d3 from "d3";
 
 import DualAxisAreaChart, {
@@ -234,6 +234,53 @@ export default function SurfaceGroundwaterChart({
             />
           </div>
         </div>
+
+        {/* Scroll indicator — positioned to the right */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 32,
+            right: "15%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 0.5,
+            opacity: scrollProgress >= 1 ? 0 : 0.6,
+            transition: "opacity 0.5s ease",
+            pointerEvents: "none",
+            animation:
+              scrollProgress < 1
+                ? "scrollBounceSWGW 2s ease-in-out infinite"
+                : "none",
+            "@keyframes scrollBounceSWGW": {
+              "0%, 100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(8px)" },
+            },
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "var(--source-size)",
+              color: "rgba(255,255,255,0.7)",
+              textTransform: "uppercase",
+            }}
+          >
+            Scroll for surface water &amp; groundwater
+          </Typography>
+          <Box
+            component="svg"
+            viewBox="0 0 24 24"
+            sx={{
+              width: 24,
+              height: 24,
+              fill: "none",
+              stroke: "rgba(255,255,255,0.7)",
+              strokeWidth: 2,
+            }}
+          >
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </Box>
+        </Box>
       </div>
     </div>
   );

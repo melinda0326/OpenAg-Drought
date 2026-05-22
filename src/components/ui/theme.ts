@@ -6,10 +6,15 @@ const theme = createTheme({
       primary: "#f5f5f5",
     },
   },
+  
   typography: {
     fontFamily: "Inter, system-ui, sans-serif",
     body1: {
       fontSize: "1.125rem",
+      lineHeight: 1.5,
+    },
+    body2: {
+      fontSize: "1rem",
       lineHeight: 1.5,
     },
   },

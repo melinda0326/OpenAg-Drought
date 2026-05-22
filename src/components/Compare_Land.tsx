@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { Box, Typography } from "@mui/material";
 import * as d3 from "d3";
 import PictogramRevenue from "../vis/Pictogram_Revenue";
 
@@ -105,7 +106,7 @@ export default function Compare_Land({
   const prevAspectRef = useRef(-1);
 
   const HEIGHT = 500;
-  const MARGIN = { top: 50, right: 25, bottom: 50, left: 90 };
+  const MARGIN = { top: 50, right: 25, bottom: 140, left: 90 };
 
   // Scroll tracking
   const handleScroll = useCallback(() => {
@@ -230,8 +231,10 @@ export default function Compare_Land({
       const xAxis = d3.axisBottom(x);
       gx.call(xAxis);
       gx.selectAll("text")
-        .style("text-anchor", "middle")
-        .attr("dy", "0.8em")
+        .style("text-anchor", "end")
+        .attr("dx", "-0.5em")
+        .attr("dy", "0.15em")
+        .attr("transform", "rotate(-55)")
         .style("fill", "white")
         .style("font-size", "var(--body-size)");
       gx.selectAll("path,line").style("stroke", "white");
@@ -457,6 +460,7 @@ export default function Compare_Land({
               <div
                 style={{
                   marginTop: "1.5rem",
+                  marginBottom: "3rem",
                   opacity: pictogramOpacity,
                   transition: "opacity 0.35s ease",
                   pointerEvents: aspectIndex === 1 && isChartPhase ? "auto" : "none",
@@ -476,6 +480,58 @@ export default function Compare_Land({
             )}
           </div>
         </div>
+
+        {/* Scroll indicator — visible only after bar chart appears, centered under black container */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 32,
+            left: 0,
+            width: "calc(var(--chart-width) + var(--overlay-margin) * 2)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 0.5,
+            opacity: isChartPhase && scrollProgress < 1 ? 0.6 : 0,
+            transition: "opacity 0.5s ease",
+            pointerEvents: "none",
+            animation:
+              isChartPhase && scrollProgress < 1
+                ? "scrollBounceLand 2s ease-in-out infinite"
+                : "none",
+            "@keyframes scrollBounceLand": {
+              "0%, 100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(8px)" },
+            },
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "var(--source-size)",
+              color: "rgba(255,255,255,0.7)",
+              textTransform: "uppercase",
+            }}
+          >
+            {aspectIndex === 0
+              ? "Scroll for revenue comparison"
+              : aspectIndex === 1
+              ? "Scroll for employment comparison"
+              : "Scroll to continue"}
+          </Typography>
+          <Box
+            component="svg"
+            viewBox="0 0 24 24"
+            sx={{
+              width: 24,
+              height: 24,
+              fill: "none",
+              stroke: "rgba(255,255,255,0.7)",
+              strokeWidth: 2,
+            }}
+          >
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </Box>
+        </Box>
       </div>
     </div>
   );

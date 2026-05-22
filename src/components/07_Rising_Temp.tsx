@@ -85,6 +85,54 @@ export default function TemperatureTrend() {
             <TemperatureLineChart scrollProgress={scrollProgress} />
           </Box>
         </Box>
+
+        {/* Scroll indicator — visible while animation is in progress */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 32,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 0.5,
+            opacity: scrollProgress >= 1 ? 0 : 0.6,
+            transition: "opacity 0.5s ease",
+            pointerEvents: "none",
+            animation:
+              scrollProgress === 0
+                ? "scrollBounceTemp 2s ease-in-out infinite"
+                : "none",
+            "@keyframes scrollBounceTemp": {
+              "0%, 100%": { transform: "translateX(-50%) translateY(0)" },
+              "50%": { transform: "translateX(-50%) translateY(8px)" },
+            },
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "var(--source-size)",
+              color: "rgba(255,255,255,0.7)",
+              textTransform: "uppercase",
+            }}
+          >
+            Scroll for rising temperature
+          </Typography>
+          <Box
+            component="svg"
+            viewBox="0 0 24 24"
+            sx={{
+              width: 24,
+              height: 24,
+              fill: "none",
+              stroke: "rgba(255,255,255,0.7)",
+              strokeWidth: 2,
+            }}
+          >
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </Box>
+        </Box>
       </div>
     </div>
   );
