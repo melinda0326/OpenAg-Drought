@@ -70,7 +70,8 @@ export default function StoryContainer() {
   const [metric, setMetric] = useState<MetricKey>("revenue_pct");
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
 
-  const handleCountyClick = useCallback((rawName: string) => {
+  const handleCountyClick = useCallback((rawName: string | null) => {
+    if (!rawName) return;
     const norm = normalizeCountyName(rawName);
     if (!norm) return;
     setSelectedCounties((prev) =>

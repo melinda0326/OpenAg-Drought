@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import * as d3 from "d3";
-import { Typography } from "@mui/material";
 import OverlayRevBarChart from "../vis/Compare_Revenue_Bar";
 import PictogramRevenue from "../vis/Pictogram_Revenue";
 
