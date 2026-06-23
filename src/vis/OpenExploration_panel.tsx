@@ -4,6 +4,13 @@ import { openExplorationStyles as S } from "../components/ui/openExplorationStyl
 
 export type MetricKey = "xland_pct" | "xwater_pct" | "revenue_pct";
 
+const CENTRAL_VALLEY_COUNTIES = new Set([
+  "butte", "colusa", "contra costa", "glenn", "fresno", "kern",
+  "kings", "madera", "merced", "placer", "san joaquin",
+  "sacramento", "shasta", "solano", "stanislaus", "sutter",
+  "tehama", "tulare", "yolo", "yuba",
+]);
+
 type Props = {
   metric: MetricKey;
   setMetric: (m: MetricKey) => void;
@@ -212,6 +219,30 @@ export default function OpenExplorationPanel({
       Click the map or pick from the list below
     </Typography>
 
+    {!loading && !error && (() => {
+      const cvOptions = countyOptions.filter((c) => CENTRAL_VALLEY_COUNTIES.has(c.norm));
+      const allCvSelected = cvOptions.length > 0 && cvOptions.every((c) => selectedCounties.includes(c.norm));
+
+      return (
+        <button
+          style={{ ...S.pill(allCvSelected), marginBottom: 10 }}
+          onClick={() => {
+            if (allCvSelected) {
+              setSelectedCounties(selectedCounties.filter((c) => !CENTRAL_VALLEY_COUNTIES.has(c)));
+            } else {
+              const cvNorms = cvOptions.map((c) => c.norm);
+              const others = selectedCounties.filter((c) => !CENTRAL_VALLEY_COUNTIES.has(c));
+              setSelectedCounties([...others, ...cvNorms]);
+            }
+          }}
+        >
+          <Typography component="span" variant="body2">
+            {allCvSelected ? "Deselect Central Valley" : "Select Central Valley"}
+          </Typography>
+        </button>
+      );
+    })()}
+
     {loading && (
       <Typography variant="body1" sx={{ opacity: 0.85 }}>
         Loading GeoJSON + CSV…
@@ -297,8 +328,6 @@ export default function OpenExplorationPanel({
               flexWrap: "wrap",
               gap: 6,
               marginTop: 8,
-              maxHeight: 70,
-              overflowY: "auto",
             }}
           >
             {selectedCounties.map((norm) => {

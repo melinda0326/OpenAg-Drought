@@ -22,6 +22,7 @@ import Transition1 from "./components/Transition1";
 import Transition2 from "./components/Transition2";
 import Transition3 from "./components/Transition3";
 import Transition_Chain from "./components/Transition_Chain";
+import AboutUs from "./components/AboutUs";
 type CountiesFC = FeatureCollection<Geometry>;
 
 type StepId =
@@ -42,7 +43,8 @@ type StepId =
   | "compare-rev"
   | "compare-water"
   | "transition-chain"
-  | "open-exploration";
+  | "open-exploration"
+  | "about-us";
 
 
 type MetricKey = "xland_pct" | "xwater_pct" | "revenue_pct";
@@ -152,7 +154,7 @@ export default function StoryContainer() {
     if (!csvRows) return new globalThis.Map<string, number>();
 
     const target = Math.round(shortage * 100) / 100;
-    const map = new globalThis.Map<string, number>();
+    const sums = new globalThis.Map<string, { total: number; count: number }>();
 
     for (const r of csvRows) {
       const s = Math.round((r.shortage ?? 0) * 100) / 100;
@@ -162,7 +164,15 @@ export default function StoryContainer() {
       const pct = getRowMetricPct(r, metric);
       if (pct === null || !Number.isFinite(pct)) continue;
 
-      map.set(county, (map.get(county) ?? 0) + pct);
+      const entry = sums.get(county) ?? { total: 0, count: 0 };
+      entry.total += pct;
+      entry.count += 1;
+      sums.set(county, entry);
+    }
+
+    const map = new globalThis.Map<string, number>();
+    for (const [county, { total, count }] of sums) {
+      map.set(county, total / count);
     }
 
     return map;
@@ -303,7 +313,7 @@ export default function StoryContainer() {
             mb: 0.5,
           }}
         >
-          % change in{" "}
+          average % change in{" "}
           <Box component="span" sx={{ fontWeight: 800 }}>
             {metric === "revenue_pct"
               ? "crop revenues"
@@ -330,8 +340,8 @@ export default function StoryContainer() {
             color: "rgba(255,255,255,0.55)",
           }}
         >
-          <span>-600%</span>
-          <span>-300%</span>
+          <span>-100%</span>
+          <span>-50%</span>
           <span>0%</span>
         </Box>
       </Box>
@@ -456,7 +466,13 @@ export default function StoryContainer() {
             />
             </div>
           </Step>
-          
+
+          <Step data="about-us">
+            <div style={{ pointerEvents: "auto" }}>
+              <AboutUs />
+            </div>
+          </Step>
+
         </Scrollama>
       </Box>
     </>

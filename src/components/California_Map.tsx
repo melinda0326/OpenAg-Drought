@@ -34,7 +34,8 @@ type StepId =
   | "compare-rev"
   | "compare-water"
   | "transition-chain"
-  | "open-exploration";
+  | "open-exploration"
+  | "about-us";
 
 type CountyPictogramData = {
   county: string;
@@ -305,11 +306,11 @@ export default function CaliforniaMap({
                 [
                   "interpolate",
                   ["linear"],
-                  ["max", -600, ["min", ["get", "mapValue"], 0]],
-                  -600, "#990000",
-                  -450, "#e60000",
-                  -300, "#ff4d4d",
-                  -150, "#ff9999",
+                  ["max", -100, ["min", ["get", "mapValue"], 0]],
+                  -100, "#990000",
+                  -75, "#e60000",
+                  -50, "#ff4d4d",
+                  -25, "#ff9999",
                   0, "#ffe5e5",
                 ],
               ],
