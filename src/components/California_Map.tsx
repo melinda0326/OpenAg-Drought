@@ -1,4 +1,5 @@
 import {useEffect, useMemo, useRef, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import Map, { Layer, Source, Marker } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
@@ -57,6 +58,57 @@ type CaliforniaMapProps = {
 };
 
 const DROUGHT_COLORS = ["#FFE5CC", "#FFB366", "#FF8C1A", "#E67300", "#B34700"];
+
+const legendPanelSx = {
+  position: "absolute",
+  right: { xs: 12, md: 20 },
+  width: { xs: "calc(100% - 24px)", md: 260 },
+  maxWidth: 260,
+  background: "rgba(8, 10, 14, 0.76)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  borderRadius: 2,
+  border: "1px solid rgba(255,255,255,0.16)",
+  boxShadow: "0 18px 44px rgba(0,0,0,0.42)",
+  p: 1.5,
+  display: "flex",
+  flexDirection: "column",
+  gap: 0.75,
+  zIndex: 10,
+  pointerEvents: "auto",
+} as const;
+
+const legendTitleSx = {
+  color: "white",
+  fontWeight: 800,
+  letterSpacing: 0.2,
+  lineHeight: 1.2,
+} as const;
+
+const legendHelperSx = {
+  color: "rgba(255,255,255,0.62)",
+  lineHeight: 1.3,
+  mb: 0.25,
+} as const;
+
+const legendRowSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: 1,
+  minHeight: 30,
+  px: 0.75,
+  py: 0.5,
+  borderRadius: 1,
+} as const;
+
+const legendSwatchSx = {
+  width: 16,
+  height: 16,
+  borderRadius: "4px",
+  flexShrink: 0,
+  border: "1px solid rgba(255,255,255,0.28)",
+  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.16)",
+} as const;
 
 export default function CaliforniaMap({
   activeSection,
@@ -151,9 +203,9 @@ export default function CaliforniaMap({
 
   if (!token) {
     return (
-      <div style={{ padding: 16, color: "white" }}>
+      <Box sx={{ p: 2, color: "white" }}>
         Missing <code>VITE_MAPBOX_TOKEN</code>. Add it to <code>.env</code> and restart the dev server.
-      </div>
+      </Box>
     );
   }
 
@@ -207,7 +259,7 @@ export default function CaliforniaMap({
   }, [cropCounts]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
     <Map
       ref={mapRef}
       mapboxAccessToken={token}
@@ -238,8 +290,8 @@ export default function CaliforniaMap({
       }}
     >
       <Marker longitude={-120.3} latitude={37.1} anchor="bottom">
-          <div
-            style={{
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -249,8 +301,8 @@ export default function CaliforniaMap({
               transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
             }}
           >
-            <div
-              style={{
+            <Box
+              sx={{
                 width: 200,
                 height: 200,
                 borderRadius: "50%",
@@ -269,25 +321,29 @@ export default function CaliforniaMap({
                   display: "block",
                 }}
               />
-            </div>
-        <div
-          style={{
-            marginTop: 20,
+            </Box>
+        <Typography
+          variant="body1"
+          sx={{
+            marginTop: 2.5,
             color: "white",
-            fontSize: "var(--body-size)",
-            fontWeight: 600,
+            fontWeight: 700,
             whiteSpace: "nowrap",
             display: "inline-block",
-            padding: "6px 10px",
-            background: "rgba(0, 0, 0, 0.4)",
-            borderRadius: "8px",
+            px: 1.5,
+            py: 0.75,
+            background: "rgba(8, 10, 14, 0.76)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            border: "1px solid rgba(255,255,255,0.16)",
+            borderRadius: 1.5,
             textShadow: "0 1px 3px rgba(0,0,0,0.9)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
+            boxShadow: "0 14px 34px rgba(0,0,0,0.42)",
           }}
         >
-          Drought Land in Central Valley
-        </div>
-          </div>
+          Drought land in the Central Valley
+        </Typography>
+          </Box>
         </Marker>
 
       {activeSection === "open-exploration" && geojsonWithValue && (
@@ -502,10 +558,10 @@ export default function CaliforniaMap({
 
           {/* Colusa label — always visible */}
           <Marker longitude={-122.1} latitude={38.85} anchor="bottom">
-            <div
-              style={{
+            <Typography
+              variant="body1"
+              sx={{
                 color: "white",
-                fontSize: "var(--body-size)",
                 fontWeight: 700,
                 textShadow: "0 1px 6px rgba(0,0,0,0.8)",
                 pointerEvents: "none",
@@ -513,7 +569,7 @@ export default function CaliforniaMap({
               }}
             >
               Colusa County
-            </div>
+            </Typography>
           </Marker>
         </>
       )}
@@ -552,153 +608,112 @@ export default function CaliforniaMap({
 
     {/* Drought legend */}
     {activeSection === "drought_monitor" && (
-      <div
-        style={{
-          position: "absolute",
-          top: 20,
-          right: 20,
-          background: "rgba(0,0,0,0.7)",
-          backdropFilter: "blur(6px)",
-          borderRadius: 10,
-          padding: "14px 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          zIndex: 10,
-          pointerEvents: "auto",
+      <Box
+        sx={{
+          ...legendPanelSx,
+          top: { xs: 12, md: 20 },
         }}
       >
-        <span
-          style={{
-            color: "white",
-            fontSize: "var(--body-size)",
-            fontWeight: 700,
-            marginBottom: 2,
-          }}
+        <Typography
+          variant="control"
+          sx={legendTitleSx}
         >
           Drought Severity
-        </span>
+        </Typography>
+        <Typography variant="chartLabel" sx={legendHelperSx}>
+          Least severe active category by county
+        </Typography>
         {["Abnormally Dry", "Moderate", "Severe", "Extreme", "Exceptional"].map(
           (label, i) => (
-            <div
+            <Box
               key={label}
-              style={{ display: "flex", alignItems: "center", gap: 8 }}
+              sx={legendRowSx}
             >
-              <div
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: 3,
+              <Box
+                sx={{
+                  ...legendSwatchSx,
                   backgroundColor: DROUGHT_COLORS[i],
-                  flexShrink: 0,
                 }}
               />
-              <span
-                style={{
+              <Typography
+                variant="chartLabel"
+                sx={{
                   color: "white",
-                  fontSize: "var(--body-size)",
+                  fontWeight: 600,
                 }}
               >
                 {label}
-              </span>
-            </div>
+              </Typography>
+            </Box>
           )
         )}
-      </div>
+      </Box>
     )}
 
     {isCompareLand && compareAspect === 0 && (
-      <div
-        style={{
-          position: "absolute",
-          top: 20,
-          right: 20,
-          background: "rgba(0,0,0,0.7)",
-          backdropFilter: "blur(6px)",
-          borderRadius: 10,
-          padding: "14px 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          zIndex: 10,
-          pointerEvents: "auto",
+      <Box
+        sx={{
+          ...legendPanelSx,
+          top: { xs: 12, md: 20 },
         }}
       >
-        <span
-          style={{
-            color: "white",
-            fontSize: "var(--body-size)",
-            fontWeight: 700,
-            marginBottom: 2,
-          }}
+        <Typography
+          variant="control"
+          sx={legendTitleSx}
         >
           Colusa Rice Acreage
-        </span>
+        </Typography>
+        <Typography variant="chartLabel" sx={legendHelperSx}>
+          Compare cultivated rice acreage before and during drought.
+        </Typography>
         {[
           { color: "#1B5E20", label: "2019" },
           { color: "#A5D6A7", label: "2022" },
         ].map(({ color, label }) => (
-          <div
+          <Box
             key={label}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
+            sx={legendRowSx}
           >
-            <div
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 3,
+            <Box
+              sx={{
+                ...legendSwatchSx,
                 backgroundColor: color,
-                flexShrink: 0,
               }}
             />
-            <span
-              style={{
+            <Typography
+              variant="chartLabel"
+              sx={{
                 color: "white",
-                fontSize: "var(--body-size)",
+                fontWeight: 600,
               }}
             >
               {label}
-            </span>
-          </div>
+            </Typography>
+          </Box>
         ))}
-      </div>
+      </Box>
     )}
 
     {isCentralValleyCropStep && (
-      <div
-        style={{
-          position: "absolute",
-          bottom: 30,
-          right: 20,
-          background: "rgba(0,0,0,0.7)",
-          backdropFilter: "blur(6px)",
-          borderRadius: 10,
-          padding: "14px 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
+      <Box
+        sx={{
+          ...legendPanelSx,
+          bottom: { xs: 12, md: 30 },
           zIndex: 9999,
-          pointerEvents: "auto",
         }}
       >
-        <span
-          style={{
-            color: "white",
-            fontSize: "var(--body-size)",
-            fontWeight: 700,
-            // marginBottom: 2,
-          }}
+        <Typography
+          variant="control"
+          sx={legendTitleSx}
         >
           Crop Type
-        </span>
-        <span
-          style={{
-            color: "white",
-            fontSize: "var(--body-size)",
-          }}
+        </Typography>
+        <Typography
+          variant="chartLabel"
+          sx={legendHelperSx}
         >
-          Hover over the legend
-        </span>
+          Hover a crop to highlight it on the map
+        </Typography>
 
         {(isReducedCropStep
           ? CROP_LEGEND.filter(({ code }) => code === "T" || code === "V")
@@ -708,49 +723,46 @@ export default function CaliforniaMap({
           // const isDimmed = hoveredCropCode !== null && hoveredCropCode !== code;
 
           return (
-            <div
+            <Box
               key={code}
               onMouseEnter={() => setHoveredCropCode(code)}
               onMouseLeave={() => setHoveredCropCode(null)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
+              sx={{
+                ...legendRowSx,
                 cursor: "pointer",
                 pointerEvents: "auto",
                 opacity: hoveredCropCode === null ? 1 : isActive ? 1 : 0.4,
-                transition: "opacity 0.2s ease, background 0.2s ease",
-                padding: "4px 6px",
-                borderRadius: 6,
-                background: isActive ? "rgba(255,255,255,0.1)" : "transparent",
+                transition:
+                  "opacity 0.2s ease, background 0.2s ease, transform 0.2s ease",
+                background: isActive ? "rgba(255,255,255,0.12)" : "transparent",
+                transform: isActive ? "translateX(2px)" : "none",
+                "&:hover": {
+                  background: "rgba(255,255,255,0.1)",
+                },
               }}
             >
-              <div
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: 3,
+              <Box
+                sx={{
+                  ...legendSwatchSx,
                   backgroundColor: color,
-                  flexShrink: 0,
                   boxShadow: isActive ? `0 0 8px ${color}` : "none",
                   transition: "box-shadow 0.2s ease, opacity 0.2s ease",
                 }}
               />
-              <span
-                style={{
+              <Typography
+                variant="chartLabel"
+                sx={{
                   color: "white",
-                  fontSize: "var(--body-size)",
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  fontWeight: isActive ? 600 : 400,
+                  fontWeight: isActive ? 700 : 500,
                 }}
               >
                 {label}
-              </span>
-            </div>
+              </Typography>
+            </Box>
           );
         })}
-      </div>
+      </Box>
     )}
-    </div>
+    </Box>
   );
 }

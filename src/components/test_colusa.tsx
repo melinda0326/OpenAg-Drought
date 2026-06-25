@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Box } from "@mui/material";
 import Map, { Layer, NavigationControl, Source } from "react-map-gl";
 import type { MapRef, LayerProps } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -97,15 +98,15 @@ export default function CaliforniaMap() {
 
   if (!token) {
     return (
-      <div style={{ padding: 16, color: "white" }}>
+      <Box sx={{ p: 2, color: "white" }}>
         Missing <code>VITE_MAPBOX_TOKEN</code>. Add it to <code>.env</code> and
         restart the dev server.
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
+    <Box sx={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
       <Map
         ref={mapRef}
         mapboxAccessToken={token}
@@ -133,6 +134,6 @@ export default function CaliforniaMap() {
           </Source>
         )}
       </Map>
-    </div>
+    </Box>
   );
 }

@@ -1,10 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import StorySection from "./ui/StorySection";
+import { storyContentSx } from "./ui/storyStyles";
 
 export default function AboutUs() {
   return (
     <StorySection>
-      <Box sx={{ width: "var(--overlay-width)", mt: "var(--space-md)" }}>
+      <Box sx={{ ...storyContentSx, mt: "var(--space-md)" }}>
         <Typography component="h3" variant="h3" gutterBottom>
           About Us
         </Typography>
@@ -18,7 +19,8 @@ export default function AboutUs() {
           <Box component="span" sx={{ fontWeight: 700 }}>
             Contributors:
           </Box>{" "}
-          Yinuo Tang, Yun-Hsin Kuo, Kwan-Liu Ma, Josué Medellín-Azuara, Alvar Escriva-Bou.
+          Yinuo Tang, Yun-Hsin Kuo, Kwan-Liu Ma, Josué Medellín-Azuara,
+          Alvar Escriva-Bou.
         </Typography>
       </Box>
     </StorySection>

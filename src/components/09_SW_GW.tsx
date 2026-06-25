@@ -1,11 +1,17 @@
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import * as d3 from "d3";
-
 import DualAxisAreaChart, {
   type DualAxisDatum,
   type ViewMode,
 } from "../vis/DualAxis_SWGW";
+import {
+  scrollCueSx,
+  stickyScrollSectionSx,
+  stickyViewportSx,
+  storyChartSx,
+  storyContentSx,
+} from "./ui/storyStyles";
 
 type RowSW = {
   WY: string;
@@ -27,34 +33,37 @@ type SurfaceGroundwaterChartProps = {
   surfaceWaterCsv?: string;
   groundwaterCsv?: string;
   height?: number;
-  title?: string;
 };
 
 const COLOR_SW = "#1B9AAA";
 const COLOR_GW = "#3d6fc4";
+
+function formatTAF(v: number) {
+  return Number.isFinite(v) ? `${Math.round(v / 1000)}k` : "";
+}
 
 export default function SurfaceGroundwaterChart({
   surfaceWaterCsv = "/data/surface_supplies_ag_annual_sum.csv",
   groundwaterCsv = "/data/change_in_gw.csv",
   height = 400,
 }: SurfaceGroundwaterChartProps) {
+  const outerRef = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<ChartRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [swDomain, setSwDomain] = useState<[number, number]>([0, 0]);
   const [gwDomain, setGwDomain] = useState<[number, number]>([0, 0]);
   const [viewMode, setViewMode] = useState<ViewMode>("both");
-
-  const outerRef = useRef<HTMLDivElement | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const handleScroll = useCallback(() => {
     const el = outerRef.current;
     if (!el) return;
+
     const rect = el.getBoundingClientRect();
     const totalScroll = rect.height - window.innerHeight;
     if (totalScroll <= 0) return;
+
     const raw = -rect.top / totalScroll;
     setScrollProgress(Math.max(0, Math.min(1, raw)));
   }, []);
@@ -99,11 +108,6 @@ export default function SurfaceGroundwaterChart({
               d.year >= 2002
           );
 
-        const swMin = d3.min(cleanSW, (d) => d.value) ?? 0;
-        const swMax = d3.max(cleanSW, (d) => d.value) ?? 0;
-        const gwMin = d3.min(cleanGW, (d) => d.value) ?? 0;
-        const gwMax = d3.max(cleanGW, (d) => d.value) ?? 0;
-
         const yearMap = new Map<number, ChartRow>();
 
         cleanSW.forEach((d) => {
@@ -123,13 +127,17 @@ export default function SurfaceGroundwaterChart({
           });
         });
 
-        const merged = Array.from(yearMap.values()).sort((a, b) => a.year - b.year);
+        if (cancelled) return;
 
-        if (!cancelled) {
-          setData(merged);
-          setSwDomain([swMin, swMax]);
-          setGwDomain([gwMin, gwMax]);
-        }
+        setData(Array.from(yearMap.values()).sort((a, b) => a.year - b.year));
+        setSwDomain([
+          d3.min(cleanSW, (d) => d.value) ?? 0,
+          d3.max(cleanSW, (d) => d.value) ?? 0,
+        ]);
+        setGwDomain([
+          d3.min(cleanGW, (d) => d.value) ?? 0,
+          d3.max(cleanGW, (d) => d.value) ?? 0,
+        ]);
       } catch (err) {
         if (!cancelled) {
           setError("Failed to load chart data.");
@@ -157,59 +165,53 @@ export default function SurfaceGroundwaterChart({
     [data]
   );
 
-  const formatTAF = (v: number) =>
-    Number.isFinite(v) ? `${Math.round(v / 1000)}k` : "";
-
   if (loading) {
-    return <div style={{ color: "white" }}>Loading chart…</div>;
+    return (
+      <Typography variant="body1" sx={{ color: "white" }}>
+        Loading chart...
+      </Typography>
+    );
   }
 
   if (error) {
-    return <div style={{ color: "white" }}>{error}</div>;
+    return (
+      <Typography variant="body1" sx={{ color: "white" }}>
+        {error}
+      </Typography>
+    );
   }
 
   return (
-    <div
-      ref={outerRef}
-      style={{ height: "250vh", position: "relative" }}
-    >
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            margin: "var(--overlay-margin)",
-          }}
-        >
-          <div style={{ width: "var(--overlay-width)" }}>
+    <Box ref={outerRef} sx={stickyScrollSectionSx}>
+      <Box sx={stickyViewportSx}>
+        <Box sx={{ margin: "var(--overlay-margin)" }}>
+          <Box sx={storyContentSx}>
             <Typography component="h3" variant="h3" gutterBottom>
               What Happens During a California Drought
             </Typography>
 
             <Typography component="p" variant="body1" gutterBottom>
-              During drought periods, California’s water system experiences significant
-              stress.
+              During drought periods, California's water system experiences
+              significant stress.
             </Typography>
 
             <Typography component="p" variant="body1" gutterBottom>
-              As drought reduces rainfall and snowpack, the runoff water in rivers and
-              reservoirs begins to decline.
+              As drought reduces rainfall and snowpack, the runoff water in
+              rivers and reservoirs begins to decline.
             </Typography>
 
-            <Typography component="p" variant="body1" sx={{mb: "var(--space-text-chart)"}} >
-              At the same time, precipitation patterns are becoming increasingly volatile
-              and unpredictable, with rainfall arriving less consistently and often in
-              shorter, more intense bursts.
+            <Typography
+              component="p"
+              variant="body1"
+              sx={{ mb: "var(--space-text-chart)" }}
+            >
+              At the same time, precipitation patterns are becoming increasingly
+              volatile and unpredictable, with rainfall arriving less
+              consistently and often in shorter, more intense bursts.
             </Typography>
-          </div>
+          </Box>
 
-          <div style={{ width: "var(--chart-width)" }}>
+          <Box sx={storyChartSx}>
             <DualAxisAreaChart
               data={chartData}
               height={height}
@@ -232,22 +234,14 @@ export default function SurfaceGroundwaterChart({
               gwDelay={1400}
               gwDuration={1800}
             />
-          </div>
-        </div>
+          </Box>
+        </Box>
 
-        {/* Scroll indicator — positioned to the right */}
         <Box
           sx={{
-            position: "absolute",
-            bottom: 32,
+            ...scrollCueSx,
             right: "15%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 0.5,
             opacity: scrollProgress >= 1 ? 0 : 0.6,
-            transition: "opacity 0.5s ease",
-            pointerEvents: "none",
             animation:
               scrollProgress < 1
                 ? "scrollBounceSWGW 2s ease-in-out infinite"
@@ -267,6 +261,7 @@ export default function SurfaceGroundwaterChart({
           >
             Scroll for surface water &amp; groundwater
           </Typography>
+
           <Box
             component="svg"
             viewBox="0 0 24 24"
@@ -281,8 +276,7 @@ export default function SurfaceGroundwaterChart({
             <path d="M12 5v14M5 12l7 7 7-7" />
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
-  }
-
+}

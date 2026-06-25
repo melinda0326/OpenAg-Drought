@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Box } from "@mui/material";
 import Map, { Layer, NavigationControl, Source } from "react-map-gl";
 import type { MapRef, LayerProps } from "react-map-gl";
 import * as d3 from "d3";
@@ -147,15 +148,15 @@ export default function Test_DM() {
 
   if (!token) {
     return (
-      <div style={{ padding: 20, color: "white" }}>
+      <Box sx={{ p: 2.5, color: "white" }}>
         Missing <code>VITE_MAPBOX_TOKEN</code>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         position: "fixed",
         inset: 0,
         width: "100%",
@@ -189,6 +190,6 @@ export default function Test_DM() {
           </Source>
         )}
       </Map>
-    </div>
+    </Box>
   );
 }

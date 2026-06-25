@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import Map from "react-map-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import { Scrollama, Step } from "react-scrollama";
@@ -81,9 +82,9 @@ export default function ScrollyCaliforniaMap(){
 
   if (!token) {
     return (
-      <div style={{ padding: 16 }}>
+      <Box sx={{ p: 2 }}>
         Missing <code>VITE_MAPBOX_TOKEN</code>. Add it to <code>.env</code> and restart the dev server.
-      </div>
+      </Box>
     );
   }
 
@@ -98,10 +99,10 @@ export default function ScrollyCaliforniaMap(){
   };
 
   return (
-  <div style={{ position: "relative", width: "100vw", minHeight: "200vh" }}>
+  <Box sx={{ position: "relative", width: "100%", minHeight: "200vh" }}>
     {/* BACKGROUND MAP */}
-    <div
-      style={{
+    <Box
+      sx={{
         position: "fixed",
         inset: 0,
         zIndex: 0,
@@ -118,18 +119,18 @@ export default function ScrollyCaliforniaMap(){
         touchZoomRotate={false}
         keyboard={false}
       />
-    </div>
+    </Box>
 
     {/* FOREGROUND CONTENT */}
-    <div
-      style={{
+    <Box
+      sx={{
         position: "relative",
         zIndex: 1,
         pointerEvents: "none", // important!
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           maxWidth: 720,
           marginLeft: 80,
           paddingTop: "20vh",
@@ -140,29 +141,28 @@ export default function ScrollyCaliforniaMap(){
             const active = currentStep === s.id;
             return (
               <Step<StepId> data={s.id} key={s.id}>
-                <div
-                  style={{
+                <Box
+                  sx={{
                     marginBottom: 360,
                     padding: "12px 0",
                     pointerEvents: "auto",
                   }}
                 >
-                  <div
-                  style={{
-                    fontSize: 26,
+                  <Typography
+                  variant="h4"
+                  sx={{
                     fontWeight: 700,
-                    marginBottom: 12,
+                    marginBottom: 1.5,
                     color: "white",
                     textShadow: "0 2px 8px rgba(0,0,0,0.85)",
                   }}
                 >
                   {s.title}
-                </div>
+                </Typography>
 
-                <div
-                  style={{
-                    fontSize: 18,
-                    lineHeight: 1.6,
+                <Typography
+                  variant="body1"
+                  sx={{
                     color: "white",
                     maxWidth: 520,
                     textShadow: "0 2px 8px rgba(0,0,0,0.85)",
@@ -171,15 +171,14 @@ export default function ScrollyCaliforniaMap(){
                   }}
                 >
                   {s.body}
-                </div>
-                </div>
+                </Typography>
+                </Box>
               </Step>
             );
           })}
         </Scrollama>
-      </div>
-    </div>
-  </div>
+      </Box>
+    </Box>
+  </Box>
 );
 }
-

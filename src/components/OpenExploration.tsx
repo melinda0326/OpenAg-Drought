@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { openExplorationSliderCss } from "./ui/openExplorationStyles";
 
@@ -197,19 +197,19 @@ export default function OpenExploration({
 
   // No auto-select — start with no counties selected
 
-  const boxSkin: React.CSSProperties = {
-  padding: 14,
-  borderRadius: 16,
-  background: "rgba(10, 12, 18, 0.68)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
-  color: "#f8fafc",
-};
+  const boxSkin = {
+    p: 1.75,
+    borderRadius: 2,
+    background: "rgba(10, 12, 18, 0.68)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    color: "#f8fafc",
+  };
   return (
-  <div
-    style={{
+  <Box
+    sx={{
       minHeight: "100vh",
       width: "100%",
       display: "flex",
@@ -224,8 +224,8 @@ export default function OpenExploration({
   >
     <style>{openExplorationSliderCss}</style>
 
-    <div
-      style={{
+    <Box
+      sx={{
         position: "relative",
         zIndex: 2,
         width: "var(--overlay-width)",
@@ -244,7 +244,7 @@ export default function OpenExploration({
       </Typography>
 
       {/* panel container */}
-      <div style={{ ...boxSkin, width: "var(--overlay-width)" }}>
+      <Box sx={{ ...boxSkin, width: "var(--overlay-width)" }}>
         <OpenExplorationPanel
           metric={metric}
           setMetric={setMetric}
@@ -256,20 +256,20 @@ export default function OpenExploration({
           loading={loading}
           error={error}
         />
-      </div>
+      </Box>
 
       {/* chart container */}
       {!loading && !error && csvRows && (
-        <div style={{ ...boxSkin, width: "var(--overlay-width)" }}>
+        <Box sx={{ ...boxSkin, width: "var(--overlay-width)" }}>
           <CentralValleyBaseScenarioBars
             rows={csvRows}
             shortage={shortage}
             metric={metric}
             selectedCounties={selectedCounties}
           />
-        </div>
+        </Box>
       )}
-    </div>
-  </div>
+    </Box>
+  </Box>
 );
 }

@@ -1,21 +1,33 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Link, Typography } from "@mui/material";
 import * as d3 from "d3";
-import { Box, Typography, Link } from "@mui/material";
-import PrecipitationBarChart, { type PrecipitationRow } from "../vis/PrecipitationBar";
+import PrecipitationBarChart, {
+  type PrecipitationRow,
+} from "../vis/PrecipitationBar";
+import {
+  scrollCueSx,
+  sourceLinkSx,
+  stickyScrollSectionSx,
+  stickyViewportSx,
+  storyChartSx,
+  storyContentSx,
+} from "./ui/storyStyles";
 
 type RawRow = Record<string, string>;
 
 export default function PrecipitationAnomalyChart() {
-  const [rows, setRows] = useState<PrecipitationRow[]>([]);
   const outerRef = useRef<HTMLDivElement | null>(null);
+  const [rows, setRows] = useState<PrecipitationRow[]>([]);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const handleScroll = useCallback(() => {
     const el = outerRef.current;
     if (!el) return;
+
     const rect = el.getBoundingClientRect();
     const totalScroll = rect.height - window.innerHeight;
     if (totalScroll <= 0) return;
+
     const raw = -rect.top / totalScroll;
     setScrollProgress(Math.max(0, Math.min(1, raw)));
   }, []);
@@ -61,36 +73,29 @@ export default function PrecipitationAnomalyChart() {
   }, []);
 
   if (rows.length === 0) {
-    return <div style={{ color: "white" }}>Loading...</div>;
+    return (
+      <Typography variant="body1" sx={{ color: "white" }}>
+        Loading...
+      </Typography>
+    );
   }
 
   return (
-    <div
-      ref={outerRef}
-      style={{ height: "250vh", position: "relative" }}
-    >
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
+    <Box ref={outerRef} sx={stickyScrollSectionSx}>
+      <Box sx={stickyViewportSx}>
         <Box sx={{ m: "var(--overlay-margin)" }}>
-          <Box sx={{ width: "var(--overlay-width)" }}>
+          <Box sx={storyContentSx}>
             <Typography component="p" variant="body1" gutterBottom>
-              At the same time,
+              At the same time,{" "}
               <Box component="span" sx={{ fontWeight: 700 }}>
-                {" "}precipitation patterns{" "}
-              </Box>
-              are becoming increasingly
+                precipitation patterns
+              </Box>{" "}
+              are becoming increasingly{" "}
               <Box component="span" sx={{ fontWeight: 700 }}>
-                {" "}volatile and unpredictable{" "}
+                volatile and unpredictable
               </Box>
-              , with rainfall arriving less consistently and often in shorter, more
-              intense bursts.
+              , with rainfall arriving less consistently and often in shorter,
+              more intense bursts.
             </Typography>
 
             <Typography
@@ -107,28 +112,14 @@ export default function PrecipitationAnomalyChart() {
                 href="https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/statewide/time-series/4/tavg/3/8/1895-2021?base_prd=true&firstbaseyear=1901&lastbaseyear=2000"
                 target="_blank"
                 rel="noopener"
-                sx={{
-                  color: "inherit",
-                  opacity: 0.6,
-                  textDecoration: "underline",
-                  textDecorationColor: "rgba(255,255,255,0.7)",
-                  "&:hover": {
-                    color: "inherit",
-                    opacity: 1,
-                    textDecoration: "underline",
-                    textDecorationColor: "currentColor",
-                  },
-                  "&:visited": {
-                    color: "inherit",
-                  },
-                }}
+                sx={sourceLinkSx}
               >
                 NOAA
               </Link>
             </Typography>
           </Box>
 
-          <Box sx={{ width: "var(--chart-width)" }}>
+          <Box sx={storyChartSx}>
             <PrecipitationBarChart
               rows={rows}
               svgWidth="var(--chart-width)"
@@ -137,20 +128,12 @@ export default function PrecipitationAnomalyChart() {
           </Box>
         </Box>
 
-        {/* Scroll indicator — visible until animation completes */}
         <Box
           sx={{
-            position: "absolute",
-            bottom: 32,
+            ...scrollCueSx,
             left: "50%",
             transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 0.5,
             opacity: scrollProgress >= 1 ? 0 : 0.6,
-            transition: "opacity 0.5s ease",
-            pointerEvents: "none",
             animation:
               scrollProgress < 1
                 ? "scrollBouncePrecip 2s ease-in-out infinite"
@@ -170,6 +153,7 @@ export default function PrecipitationAnomalyChart() {
           >
             Scroll for unstable precipitation pattern
           </Typography>
+
           <Box
             component="svg"
             viewBox="0 0 24 24"
@@ -184,7 +168,7 @@ export default function PrecipitationAnomalyChart() {
             <path d="M12 5v14M5 12l7 7 7-7" />
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

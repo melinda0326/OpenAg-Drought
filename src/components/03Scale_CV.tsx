@@ -1,20 +1,9 @@
 import { Box, Typography } from "@mui/material";
+import { centeredStatSectionSx, textShadowSx } from "./ui/storyStyles";
 
 export default function Scale_CV() {
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        px: 2,
-        pointerEvents: "none",
-      }}
-    >
+    <Box sx={{ ...centeredStatSectionSx, pointerEvents: "none" }}>
       <Box
         sx={{
           width: "100%",
@@ -25,12 +14,11 @@ export default function Scale_CV() {
         }}
       >
         <Typography
+          variant="stat"
           sx={{
-            fontSize: "clamp(3.5rem, 6vw, 7rem)",
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui, sans-serif",
+            ...textShadowSx,
             mx: "auto",
-            textShadow: "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
+            maxWidth: "min(90%, 1200px)",
           }}
           gutterBottom
         >
@@ -38,12 +26,10 @@ export default function Scale_CV() {
         </Typography>
 
         <Typography
+          variant="h4"
           sx={{
-            fontSize: "var(--subtitle-size)",
-            fontWeight: 600,
-            maxWidth: "50vw",
-            textShadow:
-              "0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.9)",
+            ...textShadowSx,
+            maxWidth: "min(90%, 760px)",
           }}
         >
           used for agriculture in California,
@@ -56,4 +42,3 @@ export default function Scale_CV() {
     </Box>
   );
 }
-

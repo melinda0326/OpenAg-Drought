@@ -3,28 +3,17 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* ── universal typography scale ── */
-  --title-size: 2.5rem;     /* 36px */
-  --subtitle-size: 1.75rem;   /* 24px */
-  --body-size: 1.125rem;         /* 16px */
-  --source-size: 1rem;
+  /* Typography fallback scale for D3/SVG labels and legacy sx values. */
+  --title-size: clamp(2rem, 3vw, 3rem);
+  --subtitle-size: clamp(1.35rem, 1.6vw, 1.9rem);
+  --body-size: clamp(1rem, 0.5vw + 0.9rem, 1.2rem);
+  --source-size: clamp(0.875rem, 0.35vw + 0.8rem, 1rem);
 
-  /* ── universal overlay layout (keeps map visible) ── */
+  /* Universal overlay layout, keeping maps visible behind text. */
   --overlay-width: min(52vw, 1200px);
   --chart-width: min(62vw, 1400px);
   --overlay-margin: 5%;
 
-
-  /* spacing scale */
-  --space-xs: 0.5rem;    /* 8px */
-  --space-sm: 0.75rem;   /* 12px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-text-chart: 5rem;
-
-
-  color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
@@ -34,90 +23,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
 
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-.scrolly::-webkit-scrollbar {
-  display: none;
-}
-
-.scrolly {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-/* Bar animation for precipitation chart */
-@keyframes barGrowFromZero {
-  0% {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  60% {
-    opacity: 1;
-    transform: scaleY(1.05);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
-.bar-hidden {
-  opacity: 0;
-}
-
-.bar-animate {
-  opacity: 0;
-  animation: barGrowFromZero 0.35s ease-out forwards;
+#root {
+  width: 100%;
+  min-height: 100vh;
 }

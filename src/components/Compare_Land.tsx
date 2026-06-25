@@ -2,14 +2,12 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import * as d3 from "d3";
 import PictogramRevenue from "../vis/Pictogram_Revenue";
-
-type RawRow = Record<string, string | number>;
-
-const selectedCounties = [
-  "Colusa", "Contra Costa", "Glenn", "Fresno", "Kern", "Kings",
-  "Merced", "Sacramento", "Shasta", "Solano", "Stanislaus",
-  "Sutter", "Tulare", "Yolo",
-];
+import {
+  loadComparisonRows,
+  selectedComparisonCounties,
+  type ComparisonRow,
+} from "./ui/comparisonData";
+import { scrollCueSx } from "./ui/storyStyles";
 
 type Aspect = {
   col2019: string;
@@ -67,12 +65,12 @@ type ChartRow = {
 };
 
 function preprocessData(
-  data: RawRow[],
+  data: ComparisonRow[],
   col2019: string,
   col2022: string
 ): ChartRow[] {
   return data
-    .filter((d) => selectedCounties.includes(String(d.CountyName)))
+    .filter((d) => selectedComparisonCounties.includes(String(d.CountyName)))
     .map((d) => {
       const v2019 = +(d[col2019] ?? 0) || 0;
       const raw2022 = +(d[col2022] ?? 0) || 0;
@@ -87,8 +85,8 @@ function preprocessData(
     .filter((d) => !(d.val2019 === 0 && d.val2022 === 0))
     .sort(
       (a, b) =>
-        selectedCounties.indexOf(a.CountyName) -
-        selectedCounties.indexOf(b.CountyName)
+        selectedComparisonCounties.indexOf(a.CountyName) -
+        selectedComparisonCounties.indexOf(b.CountyName)
     );
 }
 
@@ -97,7 +95,7 @@ export default function Compare_Land({
 }: {
   onAspectChange?: (aspect: number) => void;
 }) {
-  const [data, setData] = useState<RawRow[]>([]);
+  const [data, setData] = useState<ComparisonRow[]>([]);
   const outerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -139,18 +137,7 @@ export default function Compare_Land({
 
   // Load data
   useEffect(() => {
-    d3.csv("/data/2019_2022_comparison.csv").then((raw) => {
-      const parsed: RawRow[] = raw.map((d) => ({
-        CountyName: d.CountyName ?? "",
-        proportion_xland: +(d.proportion_xland ?? 0),
-        proportion_xlandsc: +(d.proportion_xlandsc ?? 0),
-        proportion_xwater: +(d.proportion_xwater ?? 0),
-        proportion_xwatersc: +(d.proportion_xwatersc ?? 0),
-        proportion_gross_revenue_base: +(d.proportion_gross_revenue_base ?? 0),
-        proportion_grev_sc: +(d.proportion_grev_sc ?? 0),
-      }));
-      setData(parsed);
-    });
+    loadComparisonRows().then(setData);
   }, []);
 
   // Each aspect has 2 sub-phases: text-only, then text+chart
@@ -391,12 +378,12 @@ export default function Compare_Land({
   const pictogramOpacity = (isChartPhase && aspectIndex === 1) ? chartOpacity : 0;
 
   return (
-    <div
+    <Box
       ref={outerRef}
-      style={{ height: "600vh", position: "relative" }}
+      sx={{ height: "600vh", position: "relative" }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           position: "sticky",
           top: 0,
           height: "100vh",
@@ -404,14 +391,14 @@ export default function Compare_Land({
           alignItems: "center",
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             maxWidth: "var(--chart-width)",
             margin: "var(--overlay-margin)",
           }}
         >
-          <div
-            style={{
+          <Box
+            sx={{
               background: "rgba(0, 0, 0, 0.55)",
               backdropFilter: "blur(8px)",
               borderRadius: 12,
@@ -419,18 +406,18 @@ export default function Compare_Land({
             }}
           >
             {/* Text paragraphs stacked with absolute positioning for crossfade */}
-            <div style={{ position: "relative", minHeight: "4.5rem", marginBottom: "1.5rem" }}>
+            <Box sx={{ position: "relative", minHeight: "4.5rem", marginBottom: "1.5rem" }}>
               {ASPECTS.map((aspect, i) => (
-                <p
+                <Typography
+                  component="p"
+                  variant="body1"
                   key={i}
-                  style={{
+                  sx={{
                     position: i === 0 ? "relative" : "absolute",
                     top: 0,
                     left: 0,
                     right: 0,
                     color: "white",
-                    fontSize: "var(--body-size)",
-                    fontFamily: "Inter, system-ui, sans-serif",
                     lineHeight: 1.6,
                     margin: 0,
                     opacity: getTextOpacity(i),
@@ -439,26 +426,26 @@ export default function Compare_Land({
                   }}
                 >
                   {aspect.text}
-                </p>
+                </Typography>
               ))}
-            </div>
+            </Box>
 
             {/* Chart */}
-            <div
+            <Box
               ref={containerRef}
-              style={{
+              sx={{
                 width: "100%",
                 opacity: chartOpacity,
                 transition: "opacity 0.35s ease",
               }}
             >
               <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
-            </div>
+            </Box>
 
             {/* Pictogram for Revenue aspect */}
             {colusa && (
-              <div
-                style={{
+              <Box
+                sx={{
                   marginTop: "1.5rem",
                   marginBottom: "3rem",
                   opacity: pictogramOpacity,
@@ -476,25 +463,18 @@ export default function Compare_Land({
                   colorLoss="#E65100"
                   color2022="#FFCC80"
                 />
-              </div>
+              </Box>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
 
         {/* Scroll indicator — visible only after bar chart appears, centered under black container */}
         <Box
           sx={{
-            position: "absolute",
-            bottom: 32,
+            ...scrollCueSx,
             left: 0,
             width: "calc(var(--chart-width) + var(--overlay-margin) * 2)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 0.5,
             opacity: isChartPhase && scrollProgress < 1 ? 0.6 : 0,
-            transition: "opacity 0.5s ease",
-            pointerEvents: "none",
             animation:
               isChartPhase && scrollProgress < 1
                 ? "scrollBounceLand 2s ease-in-out infinite"
@@ -532,7 +512,7 @@ export default function Compare_Land({
             <path d="M12 5v14M5 12l7 7 7-7" />
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

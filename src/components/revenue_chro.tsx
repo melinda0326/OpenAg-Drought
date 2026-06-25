@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import Map, { NavigationControl, Source, Layer } from "react-map-gl";
 import type { FeatureCollection, Feature } from "geojson";
 
@@ -181,15 +182,15 @@ export default function CaliforniaMapRevenue() {
 
   if (!token) {
     return (
-      <div style={{ padding: 16 }}>
+      <Box sx={{ p: 2 }}>
         Missing <code>VITE_MAPBOX_TOKEN</code>. Add it to <code>.env</code> and
         restart the dev server.
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div style={{ width: "90vw", height: "90vh", position: "relative" }}>
+    <Box sx={{ width: "90vw", height: "90vh", position: "relative" }}>
       <Map
         mapboxAccessToken={token}
         initialViewState={CA_VIEW}
@@ -226,46 +227,47 @@ export default function CaliforniaMapRevenue() {
 
       {/* Status overlay (no layout space reserved) */}
       {loading && (
-        <div
-          style={{
+        <Typography
+          variant="chartLabel"
+          sx={{
             position: "absolute",
-            left: 16,
-            top: 16,
+            left: 2,
+            top: 2,
             background: "rgba(255,255,255,0.9)",
             padding: "10px 12px",
-            borderRadius: 6,
+            borderRadius: "6px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-            fontSize: 13,
+            color: "#111",
           }}
         >
           Loading county + revenue data...
-        </div>
+        </Typography>
       )}
 
       {error && (
-        <div
-          style={{
+        <Typography
+          variant="chartLabel"
+          sx={{
             position: "absolute",
-            left: 16,
-            top: 16,
+            left: 2,
+            top: 2,
             background: "rgba(255,235,235,0.95)",
             color: "#b00020",
             padding: "10px 12px",
-            borderRadius: 6,
+            borderRadius: "6px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-            fontSize: 13,
             maxWidth: 420,
           }}
         >
           Error: {error}
-        </div>
+        </Typography>
       )}
 
       {/* Legend: always show min=0 */}
       {!loading && !error && revenueStats.max > 0 && (
         <RevenueLegend min={0} max={revenueStats.max} />
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -278,38 +280,38 @@ function RevenueLegend({ min, max }: { min: number; max: number }) {
       : `$${Math.round(v).toLocaleString()}`;
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         position: "absolute",
-        right: 10,
-        top: 80,
+        right: 1.25,
+        top: 10,
         background: "rgba(255,255,255,0.92)",
         padding: "12px 14px",
-        borderRadius: 6,
+        borderRadius: "6px",
         boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-        fontSize: 12,
         lineHeight: 1.2,
         width: 220,
+        color: "#111",
       }}
     >
-      <div style={{ fontWeight: 700, marginBottom: 8 }}>
+      <Typography variant="chartLabel" sx={{ fontWeight: 700, marginBottom: 1, color: "#111" }}>
         Agricultural Revenue
-      </div>
+      </Typography>
 
-      <div
-        style={{
+      <Box
+        sx={{
           height: 12,
-          borderRadius: 4,
+          borderRadius: "4px",
           background:
             "linear-gradient(to right, #ffffff, #cdeecf, #8fd694, #3fae5a, #146b2e)",
-          marginBottom: 6,
+          marginBottom: 0.75,
         }}
       />
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span>{format(min)}</span>
-        <span>{format(max)}</span>
-      </div>
-    </div>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="chartLabel" sx={{ color: "#111" }}>{format(min)}</Typography>
+        <Typography variant="chartLabel" sx={{ color: "#111" }}>{format(max)}</Typography>
+      </Box>
+    </Box>
   );
 }

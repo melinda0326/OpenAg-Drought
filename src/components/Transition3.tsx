@@ -1,10 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import StorySection from "./ui/StorySection";
+import { storyContentSx } from "./ui/storyStyles";
 
 export default function Transition3() {
   return (
     <StorySection>
-      <Box sx={{ width: "var(--overlay-width)"}}>
+      <Box sx={storyContentSx}>
         <Typography component="p" variant="body1">
           As both surface water and groundwater supplies become increasingly
           scarce, the total amount of water available for agriculture declines,

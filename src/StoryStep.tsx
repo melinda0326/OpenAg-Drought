@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Box } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 
 type StepId = "opener" | "open-exploration";
@@ -21,9 +22,10 @@ export default function StoryStep({ id, setActiveSection, children }: Props) {
   }, [inView, id, setActiveSection]);
 
   return (
-    <section
+    <Box
+      component="section"
       ref={ref}
-      style={{
+      sx={{
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -32,14 +34,14 @@ export default function StoryStep({ id, setActiveSection, children }: Props) {
         pointerEvents: "none",
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           maxWidth: 560,
           pointerEvents: "auto",
         }}
       >
         {children}
-      </div>
-    </section>
+      </Box>
+    </Box>
   );
 }

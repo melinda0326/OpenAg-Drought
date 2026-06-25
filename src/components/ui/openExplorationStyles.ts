@@ -5,10 +5,10 @@ const font = {
   family:
     'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial',
   size: {
-    title: 22,
-    subtitle: 14,
-    body: 13,
-    small: 11,
+    title: "var(--title-size)",
+    subtitle: "var(--source-size)",
+    body: "var(--source-size)",
+    small: "var(--source-size)",
   },
   weight: {
     bold: 800,
@@ -26,7 +26,7 @@ const font = {
 export const openExplorationStyles = {
   page: {
     position: "relative" as const,
-    width: "100vw",
+    width: "100%",
     minHeight: "100vh",
     overflow: "hidden",
     background: "#06080c",
@@ -40,7 +40,7 @@ export const openExplorationStyles = {
   //   top: "40%",
   //   transform: "translateY(-50%)",
   //   width: "80%",
-  //   maxWidth: "calc(100vw - 56px)",
+  //   maxWidth: "calc(100% - 56px)",
   //   maxHeight: "82vh",
   //   overflow: "auto" as const,
   //   padding: 20,
@@ -173,7 +173,7 @@ export const openExplorationStyles = {
       ? "rgba(255,255,255,0.18)"
       : "rgba(255,255,255,0.06)",
     color: "white",
-    fontSize: 13,
+    fontSize: font.size.body,
     fontWeight: 600,
     cursor: "pointer",
     boxShadow: active
@@ -199,7 +199,7 @@ export const openExplorationStyles = {
       ? "rgba(255,255,255,0.18)"
       : "rgba(255,255,255,0.06)",
     color: "white",
-    fontSize: 13,
+    fontSize: font.size.body,
     fontWeight: 600,
     cursor: "pointer",
     boxShadow: active
@@ -223,7 +223,7 @@ export const openExplorationStyles = {
     borderRadius: "50%",
     background: "rgba(255,255,255,0.12)",
     border: "1px solid rgba(255,255,255,0.2)",
-    fontSize: 11,
+    fontSize: font.size.small,
     fontWeight: 700,
     color: "rgba(255,255,255,0.7)",
     marginRight: 8,
@@ -239,7 +239,7 @@ export const openExplorationStyles = {
   } as React.CSSProperties,
 
   stepDesc: {
-    fontSize: 12,
+    fontSize: font.size.small,
     color: "rgba(255,255,255,0.5)",
     lineHeight: 1.4,
     marginBottom: 10,

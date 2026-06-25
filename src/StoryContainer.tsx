@@ -336,13 +336,13 @@ export default function StoryContainer() {
             display: "flex",
             justifyContent: "space-between",
             mt: 0.5,
-            fontSize: 10,
+            typography: "chartLabel",
             color: "rgba(255,255,255,0.55)",
           }}
         >
-          <span>-100%</span>
-          <span>-50%</span>
-          <span>0%</span>
+          <Box component="span">-100%</Box>
+          <Box component="span">-50%</Box>
+          <Box component="span">0%</Box>
         </Box>
       </Box>
 
@@ -363,95 +363,95 @@ export default function StoryContainer() {
         }}
         >
 
-        <Step data="opener"><div style={{ pointerEvents: "auto" }}><Opener /></div></Step>
+        <Step data="opener"><Box sx={{ pointerEvents: "auto" }}><Opener /></Box></Step>
 
 
         <Step data="state-crop">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <Scale />
-            </div>
+            </Box>
         </Step>
 
         <Step data="state-crop-cv">
-            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_CV />
-            </div>
+            </Box>
         </Step>
 
          <Step data="state-crop-rv">
-            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_RV />
-            </div>
+            </Box>
         </Step>
 
          <Step data="state-crop-emp">
-            <div style={{ marginBottom: "20vh", pointerEvents: "none" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "none" }}>
                 <Scale_EMP />
-            </div>
+            </Box>
         </Step>
 
         <Step data="transition1">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <Transition1 />
-            </div>
+            </Box>
         </Step>
 
         <Step data="drought_monitor">
-            <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+            <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <DroughtCumulativeAreaChart onHoverDate={handleDroughtHover} />
-            </div>
+            </Box>
             </Step>
 
         <Step data="temperature-trend">
-          <div style={{ pointerEvents: "auto" }}>
+          <Box sx={{ pointerEvents: "auto" }}>
                 <TemperatureTrend />
-            </div>
+            </Box>
           </Step>
 
         <Step data="precipitation_bar">
-          <div style={{ pointerEvents: "auto" }}>
+          <Box sx={{ pointerEvents: "auto" }}>
                 <PrecipitationAnomalyChart/>
-            </div>
+            </Box>
           </Step>
 
           <Step data="transition2"> 
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+          <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <Transition2/>
-            </div>
+            </Box>
           </Step>
 
           <Step data="sw_gw">
-          <div style={{ pointerEvents: "auto" }}>
+          <Box sx={{ pointerEvents: "auto" }}>
                 <SurfaceGroundwaterChart/>
-            </div>
+            </Box>
           </Step>
 
           <Step data="transition3"> 
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+          <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <Transition3/>
-            </div>
+            </Box>
           </Step>
 
           <Step data="compare-image">
-            <div style={{ marginBottom: "20vh", paddingTop: "5rem", pointerEvents: "auto" }}>
+            <Box sx={{ marginBottom: "20vh", paddingTop: "5rem", pointerEvents: "auto" }}>
               <Compare_Image />
-            </div>
+            </Box>
           </Step>
 
           <Step data="compare-land">
-            <div style={{ pointerEvents: "auto" }}>
+            <Box sx={{ pointerEvents: "auto" }}>
               <Compare_Land onAspectChange={setCompareAspect} />
-            </div>
+            </Box>
           </Step>
 
           <Step data="transition-chain"> 
-          <div style={{ marginBottom: "20vh", pointerEvents: "auto" }}>
+          <Box sx={{ marginBottom: "20vh", pointerEvents: "auto" }}>
                 <Transition_Chain/>
-            </div>
+            </Box>
           </Step>
 
           <Step data="open-exploration">
-            <div id="open-exploration" style={{ pointerEvents: "none" }}>
+            <Box id="open-exploration" sx={{ pointerEvents: "none" }}>
             <OpenExploration
               shortage={shortage}
               setShortage={setShortage}
@@ -464,13 +464,13 @@ export default function StoryContainer() {
               loading={loading}
               error={error}
             />
-            </div>
+            </Box>
           </Step>
 
           <Step data="about-us">
-            <div style={{ pointerEvents: "auto" }}>
+            <Box sx={{ pointerEvents: "auto" }}>
               <AboutUs />
-            </div>
+            </Box>
           </Step>
 
         </Scrollama>
