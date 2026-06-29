@@ -17,7 +17,7 @@ type Row = {
 };
 
 type Props = {
-  csvUrl?: string;
+  jsonUrl?: string;
   width?: number;
   height?: number;
   title?: string;
@@ -38,11 +38,11 @@ function parseYYYYMMDD(s: string): Date | null {
   return d3.timeParse("%Y%m%d")(String(s).trim()) ?? null;
 }
 
-function normalizeDroughtRows(rows: d3.DSVRowArray<string>): Row[] {
+function normalizeDroughtRows(rows: any[]): Row[] {
   const parsed: Row[] = [];
 
   for (const r of rows) {
-    const MapDate = parseYYYYMMDD(r.MapDate ?? "");
+    const MapDate = parseYYYYMMDD(String(r.MapDate ?? ""));
     if (!MapDate) continue;
 
     const D0 = Number(r.D0);
@@ -80,7 +80,7 @@ function normalizeDroughtRows(rows: d3.DSVRowArray<string>): Row[] {
 }
 
 export default function DroughtCumulativeAreaChart({
-  csvUrl = "/data/dm_data.csv",
+  jsonUrl = "/data/dm_data.json",
   width,
   height = 350,
   title = "Drought Severity Areas Over Time",
@@ -91,14 +91,16 @@ export default function DroughtCumulativeAreaChart({
   useEffect(() => {
     let cancelled = false;
 
-    d3.csv(csvUrl).then((rows) => {
-      if (!cancelled) setData(normalizeDroughtRows(rows));
-    });
+    fetch(jsonUrl)
+      .then((res) => res.json())
+      .then((rows: any[]) => {
+        if (!cancelled) setData(normalizeDroughtRows(rows));
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [csvUrl]);
+  }, [jsonUrl]);
 
   const referenceLines = useMemo(() => [] as ReferenceLine[], []);
   const xAccessor = useMemo(() => (d: Row) => d.MapDate, []);

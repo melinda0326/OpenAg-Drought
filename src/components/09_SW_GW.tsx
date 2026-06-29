@@ -30,8 +30,8 @@ type ChartRow = {
 };
 
 type SurfaceGroundwaterChartProps = {
-  surfaceWaterCsv?: string;
-  groundwaterCsv?: string;
+  surfaceWaterJson?: string;
+  groundwaterJson?: string;
   height?: number;
 };
 
@@ -43,8 +43,8 @@ function formatTAF(v: number) {
 }
 
 export default function SurfaceGroundwaterChart({
-  surfaceWaterCsv = "/data/surface_supplies_ag_annual_sum.csv",
-  groundwaterCsv = "/data/change_in_gw.csv",
+  surfaceWaterJson = "/data/surface_supplies_ag_annual_sum.json",
+  groundwaterJson = "/data/change_in_gw.json",
   height = 400,
 }: SurfaceGroundwaterChartProps) {
   const outerRef = useRef<HTMLDivElement | null>(null);
@@ -82,24 +82,27 @@ export default function SurfaceGroundwaterChart({
         setLoading(true);
         setError(null);
 
-        const [swRows, gwRows] = await Promise.all([
-          d3.csv(surfaceWaterCsv),
-          d3.csv(groundwaterCsv),
+        const [swRes, gwRes] = await Promise.all([
+          fetch(surfaceWaterJson),
+          fetch(groundwaterJson),
         ]);
 
-        const cleanSW = (swRows as unknown as RowSW[])
+        const [swRows, gwRows] = await Promise.all([
+          swRes.json() as Promise<any[]>,
+          gwRes.json() as Promise<any[]>,
+        ]);
+
+        const cleanSW = swRows
           .map((d) => ({
-            year: Number(String(d.WY).trim()),
-            value: Number(String(d.water_use_taf).trim()),
+            year: Number(d.WY),
+            value: Number(d.water_use_taf),
           }))
           .filter((d) => Number.isFinite(d.year) && Number.isFinite(d.value));
 
-        const cleanGW = (gwRows as unknown as RowGW[])
+        const cleanGW = gwRows
           .map((d) => ({
-            year: Number(String(d.Year).trim()),
-            value: Number(
-              String(d["Cummulative change in groundwater storage"]).trim()
-            ),
+            year: Number(d.Year),
+            value: Number(d["Cummulative change in groundwater storage"]),
           }))
           .filter(
             (d) =>
@@ -153,7 +156,7 @@ export default function SurfaceGroundwaterChart({
     return () => {
       cancelled = true;
     };
-  }, [surfaceWaterCsv, groundwaterCsv]);
+  }, [surfaceWaterJson, groundwaterJson]);
 
   const chartData: DualAxisDatum[] = useMemo(
     () =>

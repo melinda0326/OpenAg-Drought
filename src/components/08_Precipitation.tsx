@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Link, Typography } from "@mui/material";
-import * as d3 from "d3";
+
 import PrecipitationBarChart, {
   type PrecipitationRow,
 } from "../vis/PrecipitationBar";
@@ -39,12 +39,11 @@ export default function PrecipitationAnomalyChart() {
   }, [handleScroll]);
 
   useEffect(() => {
-    d3.text("/data/precipitation.csv").then((text) => {
-      const cleanedText = text.split("\n").slice(2).join("\n");
-      const parsed = d3.csvParse(cleanedText);
-
-      const cleaned = parsed
-        .map((r: RawRow) => {
+    fetch("/data/precipitation.json")
+      .then((res) => res.json())
+      .then((parsed: any[]) => {
+        const cleaned = parsed
+          .map((r: any) => {
           const rawDate = Number(r.Date);
           const value = Number(r.Value);
 

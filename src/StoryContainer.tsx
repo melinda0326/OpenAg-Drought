@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box } from "@mui/material";
 import { Scrollama, Step } from "react-scrollama";
 import type { FeatureCollection, Geometry } from "geojson";
-import * as d3 from "d3";
-import { parseCsv, getRowMetricPct, type CsvRow } from "./components/OpenExploration";
+import { getRowMetricPct, type CsvRow } from "./components/OpenExploration";
 
 import CaliforniaMap from "./components/California_Map";
 import Opener from "./components/01Opener";
@@ -100,26 +99,27 @@ export default function StoryContainer() {
         setLoading(true);
         setError(null);
 
-        const [gjRes, csvRes, dmRes] = await Promise.all([
+        const [gjRes, groupedRes, dmRes] = await Promise.all([
           fetch("/data/california_counties.geojson"),
-          fetch("/data/grouped_results_by_county.csv"),
-          fetch("/data/drought_with_least_area_category.csv"),
+          fetch("/data/grouped_results_by_county.json"),
+          fetch("/data/drought_with_least_area_category.json"),
         ]);
 
         if (!gjRes.ok) {
           throw new Error(`GeoJSON load failed (status ${gjRes.status})`);
         }
-        if (!csvRes.ok) {
-          throw new Error(`CSV load failed (status ${csvRes.status})`);
+        if (!groupedRes.ok) {
+          throw new Error(`Grouped results load failed (status ${groupedRes.status})`);
+        }
+        if (!dmRes.ok) {
+          throw new Error(`Drought data load failed (status ${dmRes.status})`);
         }
 
-        const [gj, csvText, dmText] = await Promise.all([
+        const [gj, rows, dmRows] = await Promise.all([
           gjRes.json(),
-          csvRes.text(),
-          dmRes.text(),
+          groupedRes.json() as Promise<CsvRow[]>,
+          dmRes.json() as Promise<any[]>,
         ]);
-        const rows = parseCsv(csvText);
-        const dmRows = d3.csvParse(dmText);
 
         // Index drought rows by date string
         const byDate = new globalThis.Map<string, any[]>();

@@ -12,14 +12,14 @@ type YearlyRow = {
 };
 
 type Props = {
-  csvUrl?: string;
+  jsonUrl?: string;
   height?: number;
   title?: string;
   scrollProgress?: number;
 };
 
 export default function TemperatureLineChart({
-  csvUrl = "/data/temp_data.csv",
+  jsonUrl = "/data/temp_data.json",
   height = 350,
   title = "Annual Average Temperature Trend",
   scrollProgress = 0,
@@ -45,13 +45,9 @@ export default function TemperatureLineChart({
     if (!svgRef.current) return;
 
     const draw = async () => {
-      const text = await d3.text(csvUrl);
-      if (!text) return;
-
-      const lines = text.split(/\r?\n/);
-      const csvText = lines.slice(2).join("\n");
-
-      const raw = d3.csvParse(csvText) as unknown as RawRow[];
+      const res = await fetch(jsonUrl);
+      if (!res.ok) return;
+      const raw: RawRow[] = await res.json();
 
       const yearlyMap = new Map<number, number[]>();
 
@@ -191,7 +187,7 @@ export default function TemperatureLineChart({
     };
 
     draw();
-  }, [csvUrl, containerW, height, scrollProgress, title]);
+  }, [jsonUrl, containerW, height, scrollProgress, title]);
 
   return (
     <div ref={containerRef} style={{ width: "100%", height }}>

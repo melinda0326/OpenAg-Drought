@@ -1,5 +1,3 @@
-import * as d3 from "d3";
-
 export type ComparisonRow = Record<string, string | number>;
 
 export const selectedComparisonCounties = [
@@ -20,7 +18,8 @@ export const selectedComparisonCounties = [
 ];
 
 export async function loadComparisonRows() {
-  const raw = await d3.csv("/data/2019_2022_comparison.csv");
+  const res = await fetch("/data/2019_2022_comparison.json");
+  const raw: any[] = await res.json();
 
   return raw.map((d) => ({
     CountyName: d.CountyName ?? "",
